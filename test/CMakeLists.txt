@@ -18,11 +18,11 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+file(GLOB_RECURSE TEST_FILES CMAKE_CONFIGURE_DEPENDS "*.cpp")
+
 # Add the test executable
 add_executable(basilar_tests
-    test1.cpp
-    test2.cpp
-    # Add more test files here
+    ${TEST_FILES}
 )
 
 # Link the GTest library to the test executable
@@ -34,16 +34,12 @@ target_link_libraries(
 include(GoogleTest)
 gtest_discover_tests(basilar_tests)
 
-# Add a custom target to run the tests
-add_custom_target(run_tests
-    COMMAND basilar_tests
-    DEPENDS basilar_tests
-)
+get_filename_component(SRC_DIR ../src ABSOLUTE)
 
+file(GLOB_RECURSE SRC_FILES CMAKE_CONFIGURE_DEPENDS "${SRC_DIR}/*.cpp")
 # Set the source files for the project
 set(SOURCE_FILES
-    ../src/simple.cpp
-    # Add more source files here
+    ${SRC_FILES}
 )
 
 # Add the source files to the test executable

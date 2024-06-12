@@ -1,5 +1,5 @@
 #!/bin/bash 
 
-cmake -S . -B build
-cmake --build build
-cd build && ctest
+cmake -S . -B ../build-test
+cmake --build ../build-test
+cd ../build-test && ctest --output-on-failure
