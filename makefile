@@ -17,10 +17,10 @@ OBJS := $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SRCS:.cpp=.o))
 # Include directories
 INCLUDES := -I$(SRC_DIR)
 
-montador: montador.o $(OBJS)
+montador: $(OBJS) $(BUILD_DIR)/montador.o
 	$(CC) $(CFLAGS) $(OBJS) $(BUILD_DIR)/montador.o -o $(MONTADOR_TARGET)
 
-ligador: ligador.o $(OBJS)
+ligador: $(OBJS) $(BUILD_DIR)/ligador.o
 	$(CC) $(CFLAGS) $(OBJS) $(BUILD_DIR)/ligador.o -o $(LIGADOR_TARGET)
 
 # Rule to build object files
@@ -29,10 +29,12 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 # Rule to build montador.o and ligador.o
-montador.o: montador.cpp
+$(BUILD_DIR)/montador.o: montador.cpp
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDES) -c montador.cpp -o $(BUILD_DIR)/montador.o
 
-ligador.o: ligador.cpp
+$(BUILD_DIR)/ligador.o: ligador.cpp
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDES) -c ligador.cpp -o $(BUILD_DIR)/ligador.o
 
 # Clean rule
