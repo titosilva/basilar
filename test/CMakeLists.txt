@@ -1,0 +1,50 @@
+cmake_minimum_required(VERSION 3.14)
+project(BasilarTests)
+
+# GoogleTest requires at least C++14
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Add GoogleTest as a dependency and download it from Github
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+# Add the test executable
+add_executable(basilar_tests
+    test1.cpp
+    test2.cpp
+    # Add more test files here
+)
+
+# Link the GTest library to the test executable
+target_link_libraries(
+    basilar_tests
+    GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(basilar_tests)
+
+# Add a custom target to run the tests
+add_custom_target(run_tests
+    COMMAND basilar_tests
+    DEPENDS basilar_tests
+)
+
+# Set the source files for the project
+set(SOURCE_FILES
+    ../src/simple.cpp
+    # Add more source files here
+)
+
+# Add the source files to the test executable
+target_sources(basilar_tests PRIVATE ${SOURCE_FILES})
