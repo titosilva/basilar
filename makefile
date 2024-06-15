@@ -1,7 +1,7 @@
 # Compiler
 CC := g++
 # Compiler flags
-CFLAGS := -Wall -Wextra -pedantic -std=c++14
+CFLAGS := -Wall -Wextra -pedantic -std=c++17
 # Source directory
 SRC_DIR := src
 # Output directory
