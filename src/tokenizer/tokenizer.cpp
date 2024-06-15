@@ -6,50 +6,67 @@
 using namespace std;
 namespace basilar::tokens {
 
-vector<Token> Tokenizer::get_tokens() const {
-    return vector<Token>(this->tokens);
-}
-
 void Tokenizer::add_line_preprocessor(Preprocessor preprocessor) {
-    this->line_preprocessors.push_back(preprocessor);
+    this->__line_preprocessors.push_back(preprocessor);
 }
 
-string Tokenizer::__preprocess(const string& line) {
+string Tokenizer::__preprocess(string line) {
     auto cp = string(line);
-    for (auto preprocessor : this->line_preprocessors) {
+    for (auto preprocessor : this->__line_preprocessors) {
         cp = preprocessor(cp);
     }
 
     return cp;
 }
 
-std::string Tokenizer::next_line() {
-    auto r = this->file_content;
-    if (this->current_index >= r.size()) {
-        return "";
+bool Tokenizer::next_line() {
+    auto line = this->__read_next_line();
+
+    if (line == "\0") {
+        return false;
     }
 
-    auto match = r.find_first_of("\n", this->current_index);
+    this->__tokenize(line);
+    return true;
+}
+
+std::string Tokenizer::__read_next_line() {
+    auto r = this->__file_content;
+    if (this->__current_index >= r.size()) {
+        return "\0";
+    }
+
+    auto match = r.find_first_of("\n", this->__current_index);
     if (match == string::npos) {
-        auto line = r.substr(this->current_index, r.size() - this->current_index);
-        this->current_index = r.size();
-        this->current_line++;
-        return this->__preprocess(line);
+        match = r.size();
     }
 
-    auto line = r.substr(this->current_index, match - this->current_index);
-    this->current_index = match + 1;
-    this->current_line++;
+    auto line = r.substr(this->__current_index, match - this->__current_index);
+    this->__current_index = match + 1;
+    this->__current_line_number++;
     return this->__preprocess(line);
 }
 
-void Tokenizer::__tokenize(const std::string& line) {
-    auto cp = string(line);
-    for (auto preprocessor : this->line_preprocessors) {
-        cp = preprocessor(cp);
-    }
+void Tokenizer::__tokenize(std::string line) {
+    this->__tokens = queue<Token>();
 
-    this->tokens = {};
+    auto tokens = split_line_in_spaces_and_tabs(line);
+    for (auto token : tokens) {
+        auto t = Token(
+            TokenType::LABEL,
+            token,
+            line,
+            this->__current_line_number
+        );
+
+        this->__tokens.push(t);
+    }
+}
+
+Token Tokenizer::next_token() {
+    auto token = this->__tokens.front();
+    this->__tokens.pop();
+    return token;
 }
 
 vector<string> split_line_in_spaces_and_tabs(const string& line) {
@@ -58,12 +75,11 @@ vector<string> split_line_in_spaces_and_tabs(const string& line) {
     vector<string> tokens = {};
 
     int i = 0;
-    for (;i < cp.size();) {
+    while (i < cp.size()) {
         auto match = cp.find_first_of(" \t", i);
 
         if (match == string::npos) {
-            tokens.push_back(cp.substr(i, cp.size() - i));
-            break;
+            match = cp.size();
         }
 
         tokens.push_back(cp.substr(i, match - i));
