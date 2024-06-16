@@ -4,7 +4,7 @@
 #include <string>
 
 using namespace std;
-using namespace basilar::tokens;
+using namespace basilar::tokenizer;
 
 DefineTestSuiteFor(Preprocessor)
     DefineTest(Trim__ShouldRemoveLeadingAndTrailingWhitespace) {

@@ -2,7 +2,7 @@
 #include "../../src/tokenizer/tokenizer.hpp"
 
 using namespace std;
-using namespace basilar::tokens;
+using namespace basilar::tokenizer;
 
 DefineTestSuiteFor(Tokenizer)
 
