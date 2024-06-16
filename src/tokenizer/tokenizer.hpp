@@ -11,7 +11,7 @@
 #include "preprocessor.hpp"
 #include "token.hpp"
 
-namespace basilar::tokens {
+namespace basilar::tokenizer {
 
 class Tokenizer {
    public:

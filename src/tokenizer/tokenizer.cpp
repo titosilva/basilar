@@ -4,7 +4,7 @@
 #include "token.hpp"
 
 using namespace std;
-namespace basilar::tokens {
+namespace basilar::tokenizer {
 
 void Tokenizer::add_line_preprocessor(Preprocessor preprocessor) {
     this->__line_preprocessors.push_back(preprocessor);

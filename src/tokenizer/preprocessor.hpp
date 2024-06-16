@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace basilar::tokens {
+namespace basilar::tokenizer {
     typedef std::function<std::string(std::string)> Preprocessor;
 
     const Preprocessor Trim = [](string line) -> string {
