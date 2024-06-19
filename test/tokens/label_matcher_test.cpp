@@ -18,6 +18,9 @@ DefineTestSuiteFor(LabelMatcher)
         bool result = labelMatcher.try_match(raw, outToken);
 
         ASSERT_TRUE(result);
+        Label* label = dynamic_cast<Label*>(*outToken);
+        ASSERT_NE(label, nullptr);
+        ASSERT_EQ(label->get_value(), "label");
     }
 
     DefineTest(LabelMatcher__Should__ReturnFalse__When__RawTokenDoesNotEndWithColon) {
@@ -47,5 +50,5 @@ DefineTestSuiteFor(LabelMatcher)
 EndTestSuite
 
 RunTest(LabelMatcher, LabelMatcher__Should__ReturnTrue__When__RawTokenIsLabel)
-// RunTest(LabelMatcher, LabelMatcher__Should__ReturnFalse__When__RawTokenDoesNotEndWithColon)
-// RunTest(LabelMatcher, LabelMatcher__Should__ReturnFalse__When__RawTokenHasSourceColumnNumber)
+RunTest(LabelMatcher, LabelMatcher__Should__ReturnFalse__When__RawTokenDoesNotEndWithColon)
+RunTest(LabelMatcher, LabelMatcher__Should__ReturnFalse__When__RawTokenHasSourceColumnNumber)

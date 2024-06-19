@@ -15,7 +15,7 @@
     void test_name()
 
 #define RunTest(class_name, test_name) \
-    TEST(class_name##DefineTest, test_name) { \
+    TEST(class_name##Tests, test_name) { \
         FriendTest<class_name> test_accessor; \
         test_accessor.test_name(); \
     }
