@@ -131,6 +131,30 @@ DefineTestSuiteFor(Tokenizer)
 
         ASSERT_FALSE(tokenizer.next_line());
     }
+
+    DefineTest(NextToken__Should__RetrieveTokenInNextLine__WithComments__AndBlankLines) {
+        auto tokenizer = Tokenizer("rot1:\tjmp a1; this is a comment\n\t; Commented\t\t\n\n\n\t\t\tjmp\t\ta3    ");
+        tokenizer.with_common_preprocessors();
+
+        ASSERT_TRUE(tokenizer.next_line());
+        auto token = tokenizer.next_token();
+        ASSERT_EQ(token.value, "rot1:");
+
+        token = tokenizer.next_token();
+        ASSERT_EQ(token.value, "jmp");
+
+        token = tokenizer.next_token();
+        ASSERT_EQ(token.value, "a1");
+
+        ASSERT_TRUE(tokenizer.next_line());
+        token = tokenizer.next_token();
+        ASSERT_EQ(token.value, "jmp");
+
+        token = tokenizer.next_token();
+        ASSERT_EQ(token.value, "a3");
+
+        ASSERT_FALSE(tokenizer.next_line());
+    }
 EndTestSuite
 
 RunTest(Tokenizer, Preprocess__Should__LowerLine__WhenToLowerPreprocessor)
@@ -144,3 +168,4 @@ RunTest(Tokenizer, ReadNextLine__Should__ReturnTrimmedLine)
 RunTest(Tokenizer, ReadNextLine__Should__PreprocessedReturnLine)
 RunTest(Tokenizer, NextToken__Should__RetrieveTokenInFirstLine)
 RunTest(Tokenizer, NextToken__Should__RetrieveTokenInNextLine)
+RunTest(Tokenizer, NextToken__Should__RetrieveTokenInNextLine__WithComments__AndBlankLines)

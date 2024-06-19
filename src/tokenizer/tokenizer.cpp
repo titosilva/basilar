@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 #include "tokenizer.hpp"
 #include "token.hpp"
@@ -22,7 +23,7 @@ string Tokenizer::__preprocess(string line) {
 bool Tokenizer::next_line() {
     auto line = this->__read_next_line();
 
-    if (line == "\0") {
+    if (line.empty()) {
         return false;
     }
 
@@ -36,15 +37,21 @@ std::string Tokenizer::__read_next_line() {
         return "\0";
     }
 
-    auto match = r.find_first_of("\n", this->__current_index);
-    if (match == string::npos) {
-        match = r.size();
-    }
+    string line;
+    do {
+        auto match = r.find_first_of("\n", this->__current_index);
+        if (match == string::npos) {
+            match = r.size();
+        }
 
-    auto line = r.substr(this->__current_index, match - this->__current_index);
-    this->__current_index = match + 1;
-    this->__current_line_number++;
-    return this->__preprocess(line);
+        line = r.substr(this->__current_index, match - this->__current_index);
+        this->__current_index = match + 1;
+        this->__current_line_number++;
+
+        line = this->__preprocess(line);
+    } while (line.empty() && this->__current_index < r.size());
+
+    return line;
 }
 
 void Tokenizer::__tokenize(std::string line) {

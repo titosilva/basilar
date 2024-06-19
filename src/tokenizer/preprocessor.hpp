@@ -26,4 +26,12 @@ namespace basilar::tokenizer {
     const Preprocessor UnifyWhitespace = [](string line) -> string {
         return regex_replace(line, regex("\\s+"), " ");
     };
+
+    const Preprocessor RemoveComments = [](string line) -> string {
+        return regex_replace(line, regex(";.*"), "");
+    };
+
+    const Preprocessor EmptyBlankLines = [](string line) -> string {
+        return regex_replace(line, regex("^\\s*$"), "");
+    };
 } // namespace basilar::tokens

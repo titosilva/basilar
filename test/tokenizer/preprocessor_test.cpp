@@ -30,8 +30,35 @@ DefineTestSuiteFor(Preprocessor)
 
         ASSERT_EQ(expected, actual);
     }
+
+    DefineTest(RemoveComments__ShouldRemoveComments) {
+        string line = "Hello, World! ; This is a comment";
+        string expected = "Hello, World! ";
+        auto actual = RemoveComments(line);
+
+        ASSERT_EQ(expected, actual);
+    }
+
+    DefineTest(RemoveComments__ShouldRemoveComments__WhenLineIsAllCommented) {
+        string line = "; This is a comment";
+        string expected = "";
+        auto actual = RemoveComments(line);
+
+        ASSERT_EQ(expected, actual);
+    }
+
+    DefineTest(EmptyBlankLines__ShouldTransformLinesWithOnlySpacesToEmpty) {
+        string line = "\t  \t \t \t \t\t    ";
+        string expected = "";
+        auto actual = EmptyBlankLines(line);
+
+        ASSERT_EQ(expected, actual);
+    }
 EndTestSuite
 
 RunTest(Preprocessor, Trim__ShouldRemoveLeadingAndTrailingWhitespace)
 RunTest(Preprocessor, ToLower__ShouldConvertAllCharactersToLowercase)
 RunTest(Preprocessor, UnifyWhitespace__ShouldReplaceMultipleWhitespaceCharactersWithSingleSpace)
+RunTest(Preprocessor, RemoveComments__ShouldRemoveComments)
+RunTest(Preprocessor, RemoveComments__ShouldRemoveComments__WhenLineIsAllCommented)
+RunTest(Preprocessor, EmptyBlankLines__ShouldTransformLinesWithOnlySpacesToEmpty)

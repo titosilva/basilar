@@ -20,9 +20,11 @@ class Tokenizer {
 
     void add_line_preprocessor(Preprocessor preprocessor);
     void with_common_preprocessors() {
+        this->add_line_preprocessor(RemoveComments);
         this->add_line_preprocessor(Trim);
         this->add_line_preprocessor(ToLower);
         this->add_line_preprocessor(UnifyWhitespace);
+        this->add_line_preprocessor(EmptyBlankLines);
     }
 
     bool next_line();
