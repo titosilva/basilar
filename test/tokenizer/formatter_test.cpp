@@ -1,12 +1,12 @@
 #include "../test_suite.hpp"
-#include "../../src/tokenizer/preprocessor.hpp"
+#include "../../src/tokenizer/formatter.hpp"
 
 #include <string>
 
 using namespace std;
 using namespace basilar::tokenizer;
 
-DefineTestSuiteFor(Preprocessor)
+DefineTestSuiteFor(Formatter)
     DefineTest(Trim__ShouldRemoveLeadingAndTrailingWhitespace) {
         string line = "  \tHello, World! \t\t \t";   
         string expected = "Hello, World!";
@@ -56,9 +56,9 @@ DefineTestSuiteFor(Preprocessor)
     }
 EndTestSuite
 
-RunTest(Preprocessor, Trim__ShouldRemoveLeadingAndTrailingWhitespace)
-RunTest(Preprocessor, ToLower__ShouldConvertAllCharactersToLowercase)
-RunTest(Preprocessor, UnifyWhitespace__ShouldReplaceMultipleWhitespaceCharactersWithSingleSpace)
-RunTest(Preprocessor, RemoveComments__ShouldRemoveComments)
-RunTest(Preprocessor, RemoveComments__ShouldRemoveComments__WhenLineIsAllCommented)
-RunTest(Preprocessor, EmptyBlankLines__ShouldTransformLinesWithOnlySpacesToEmpty)
+RunTest(Formatter, Trim__ShouldRemoveLeadingAndTrailingWhitespace)
+RunTest(Formatter, ToLower__ShouldConvertAllCharactersToLowercase)
+RunTest(Formatter, UnifyWhitespace__ShouldReplaceMultipleWhitespaceCharactersWithSingleSpace)
+RunTest(Formatter, RemoveComments__ShouldRemoveComments)
+RunTest(Formatter, RemoveComments__ShouldRemoveComments__WhenLineIsAllCommented)
+RunTest(Formatter, EmptyBlankLines__ShouldTransformLinesWithOnlySpacesToEmpty)

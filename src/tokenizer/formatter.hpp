@@ -7,13 +7,13 @@
 using namespace std;
 
 namespace basilar::tokenizer {
-    typedef std::function<std::string(std::string)> Preprocessor;
+    typedef std::function<std::string(std::string)> Formatter;
 
-    const Preprocessor Trim = [](string line) -> string {
+    const Formatter Trim = [](string line) -> string {
         return regex_replace(line, regex("^\\s+|\\s+$"), "");
     };
 
-    const Preprocessor ToLower = [](string line) -> string { 
+    const Formatter ToLower = [](string line) -> string { 
         string s;
 
         for (auto c : line) {
@@ -23,15 +23,19 @@ namespace basilar::tokenizer {
         return s;
     };
 
-    const Preprocessor UnifyWhitespace = [](string line) -> string {
+    const Formatter UnifyWhitespace = [](string line) -> string {
         return regex_replace(line, regex("\\s+"), " ");
     };
 
-    const Preprocessor RemoveComments = [](string line) -> string {
+    const Formatter RemoveComments = [](string line) -> string {
         return regex_replace(line, regex(";.*"), "");
     };
 
-    const Preprocessor EmptyBlankLines = [](string line) -> string {
+    const Formatter EmptyBlankLines = [](string line) -> string {
         return regex_replace(line, regex("^\\s*$"), "");
     };
+
+    const Formatter RemoveEspacesBeforeColon = [](string line) -> string {
+        return regex_replace(line, regex("\\s+:"), ":");
+    }; 
 } // namespace basilar::tokens

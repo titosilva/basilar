@@ -6,37 +6,37 @@ using namespace basilar::tokenizer;
 
 DefineTestSuiteFor(Tokenizer)
 
-    DefineTest(Preprocess__Should__LowerLine__WhenToLowerPreprocessor) {
+    DefineTest(Preprocess__Should__LowerLine__WhenToLowerFormatter) {
         auto tokenizer = Tokenizer("Hello\nWorld");
-        tokenizer.add_line_preprocessor(ToLower);
+        tokenizer.add_line_formatter(ToLower);
 
-        auto r = tokenizer.__preprocess("Hello");
+        auto r = tokenizer.__format("Hello");
         ASSERT_EQ(r, "hello");
     }
 
-    DefineTest(Preprocess__Should__TrimLine__WhenTrimPreprocessor) {
+    DefineTest(Preprocess__Should__TrimLine__WhenTrimFormatter) {
         auto tokenizer = Tokenizer("  \tHello \t\t\n    World!   ");
-        tokenizer.add_line_preprocessor(Trim);
+        tokenizer.add_line_formatter(Trim);
 
-        auto r = tokenizer.__preprocess("  \tHello \t\t\n    World!   ");
+        auto r = tokenizer.__format("  \tHello \t\t\n    World!   ");
         ASSERT_EQ(r, "Hello \t\t\n    World!");
     }
 
-    DefineTest(Preprocess__Should__UnifyWhitespace__WhenUnifyWhitespacePreprocessor) {
+    DefineTest(Preprocess__Should__UnifyWhitespace__WhenUnifyWhitespaceFormatter) {
         auto tokenizer = Tokenizer("Hello       World!");
-        tokenizer.add_line_preprocessor(UnifyWhitespace);
+        tokenizer.add_line_formatter(UnifyWhitespace);
 
-        auto r = tokenizer.__preprocess("Hello       World!");
+        auto r = tokenizer.__format("Hello       World!");
         ASSERT_EQ(r, "Hello World!");
     }
 
-    DefineTest(Preprocess__Should__ApplyAllPreprocessors__WhenMultiplePreprocessors) {
+    DefineTest(Preprocess__Should__ApplyAllFormatters__WhenMultipleFormatters) {
         auto tokenizer = Tokenizer("  \tHello \t\t    World    \t!   ");
-        tokenizer.add_line_preprocessor(Trim);
-        tokenizer.add_line_preprocessor(ToLower);
-        tokenizer.add_line_preprocessor(UnifyWhitespace);
+        tokenizer.add_line_formatter(Trim);
+        tokenizer.add_line_formatter(ToLower);
+        tokenizer.add_line_formatter(UnifyWhitespace);
 
-        auto r = tokenizer.__preprocess("  \tHello \t\t    World    \t!   ");
+        auto r = tokenizer.__format("  \tHello \t\t    World    \t!   ");
         ASSERT_EQ(r, "hello world !");
     }
     
@@ -76,7 +76,7 @@ DefineTestSuiteFor(Tokenizer)
 
     DefineTest(ReadNextLine__Should__ReturnTrimmedLine) {
         auto tokenizer = Tokenizer("  \tHello \t\t");
-        tokenizer.add_line_preprocessor(Trim);
+        tokenizer.add_line_formatter(Trim);
 
         auto r = tokenizer.__read_next_line();
         ASSERT_EQ(r, "Hello");
@@ -87,9 +87,9 @@ DefineTestSuiteFor(Tokenizer)
 
     DefineTest(ReadNextLine__Should__PreprocessedReturnLine) {
         auto tokenizer = Tokenizer("  \tHello \t\t\n    World    \t!   ");
-        tokenizer.add_line_preprocessor(Trim);
-        tokenizer.add_line_preprocessor(ToLower);
-        tokenizer.add_line_preprocessor(UnifyWhitespace);
+        tokenizer.add_line_formatter(Trim);
+        tokenizer.add_line_formatter(ToLower);
+        tokenizer.add_line_formatter(UnifyWhitespace);
 
         auto r = tokenizer.__read_next_line();
         ASSERT_EQ(r, "hello");
@@ -103,7 +103,7 @@ DefineTestSuiteFor(Tokenizer)
 
     DefineTest(NextToken__Should__RetrieveTokenInFirstLine) {
         auto tokenizer = Tokenizer("rot1:\tjmp a1\n\tjmp a3");
-        tokenizer.with_common_preprocessors();
+        tokenizer.with_common_formatters();
 
         ASSERT_TRUE(tokenizer.next_line());
         auto token = tokenizer.next_token();
@@ -117,8 +117,8 @@ DefineTestSuiteFor(Tokenizer)
     }
 
     DefineTest(NextToken__Should__RetrieveTokenInNextLine) {
-        auto tokenizer = Tokenizer("rot1:\tjmp a1\n\t\tjmp\t\ta3    ");
-        tokenizer.with_common_preprocessors();
+        auto tokenizer = Tokenizer("rot1\t\t   \t:\tjmp a1\n\t\tjmp\t\ta3    ");
+        tokenizer.with_common_formatters();
 
         ASSERT_TRUE(tokenizer.next_line());
         ASSERT_TRUE(tokenizer.next_line());
@@ -133,8 +133,8 @@ DefineTestSuiteFor(Tokenizer)
     }
 
     DefineTest(NextToken__Should__RetrieveTokenInNextLine__WithComments__AndBlankLines) {
-        auto tokenizer = Tokenizer("rot1:\tjmp a1; this is a comment\n\t; Commented\t\t\n\n\n\t\t\tjmp\t\ta3    ");
-        tokenizer.with_common_preprocessors();
+        auto tokenizer = Tokenizer("rot1\t\t  \t\t:\tjmp a1; this is a comment\n\t; Commented\t\t\n\n\n\t\t\tjmp\t\ta3  \t  \n\n");
+        tokenizer.with_common_formatters();
 
         ASSERT_TRUE(tokenizer.next_line());
         auto token = tokenizer.next_token();
@@ -157,10 +157,10 @@ DefineTestSuiteFor(Tokenizer)
     }
 EndTestSuite
 
-RunTest(Tokenizer, Preprocess__Should__LowerLine__WhenToLowerPreprocessor)
-RunTest(Tokenizer, Preprocess__Should__TrimLine__WhenTrimPreprocessor)
-RunTest(Tokenizer, Preprocess__Should__UnifyWhitespace__WhenUnifyWhitespacePreprocessor)
-RunTest(Tokenizer, Preprocess__Should__ApplyAllPreprocessors__WhenMultiplePreprocessors)
+RunTest(Tokenizer, Preprocess__Should__LowerLine__WhenToLowerFormatter)
+RunTest(Tokenizer, Preprocess__Should__TrimLine__WhenTrimFormatter)
+RunTest(Tokenizer, Preprocess__Should__UnifyWhitespace__WhenUnifyWhitespaceFormatter)
+RunTest(Tokenizer, Preprocess__Should__ApplyAllFormatters__WhenMultipleFormatters)
 RunTest(Tokenizer, SplitLine__Should__SplitStringBySpaces__WhenOneSpace)
 RunTest(Tokenizer, SplitLine__Should__SplitStringBySpacesAndTabs__WhenSpacesAndTabs)
 RunTest(Tokenizer, ReadNextLine__Should__ReturnLine)

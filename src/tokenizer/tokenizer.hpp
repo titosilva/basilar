@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "../friend_test.hpp"
-#include "preprocessor.hpp"
+#include "formatter.hpp"
 #include "token.hpp"
 
 namespace basilar::tokenizer {
@@ -18,13 +18,14 @@ class Tokenizer {
 
     Tokenizer(std::string file_content) : __file_content(file_content), __current_line_number(0), __current_index(0) {}
 
-    void add_line_preprocessor(Preprocessor preprocessor);
-    void with_common_preprocessors() {
-        this->add_line_preprocessor(RemoveComments);
-        this->add_line_preprocessor(Trim);
-        this->add_line_preprocessor(ToLower);
-        this->add_line_preprocessor(UnifyWhitespace);
-        this->add_line_preprocessor(EmptyBlankLines);
+    void add_line_formatter(Formatter formatter);
+    void with_common_formatters() {
+        this->add_line_formatter(RemoveComments);
+        this->add_line_formatter(Trim);
+        this->add_line_formatter(ToLower);
+        this->add_line_formatter(UnifyWhitespace);
+        this->add_line_formatter(EmptyBlankLines);
+        this->add_line_formatter(RemoveEspacesBeforeColon);
     }
 
     bool next_line();
@@ -34,18 +35,13 @@ class Tokenizer {
 
    private:
     std::string __read_next_line();
-    std::string __preprocess(std::string line);
+    std::string __format(std::string line);
     void __tokenize(std::string line);
     std::string __file_content;
     int __current_line_number;
     int __current_index;
-    std::vector<Preprocessor> __line_preprocessors;
+    std::vector<Formatter> __line_formatters;
     std::queue<Token> __tokens;
-
-   public:  // For testing purposes
-    std::vector<Preprocessor> get_line_preprocessors() {
-        return this->__line_preprocessors;
-    }
 };
 
 std::vector<std::string> split_line_in_spaces_and_tabs(const std::string& line);

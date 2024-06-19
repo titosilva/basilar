@@ -6,14 +6,14 @@
 using namespace std;
 namespace basilar::tokenizer {
 
-void Tokenizer::add_line_preprocessor(Preprocessor preprocessor) {
-    this->__line_preprocessors.push_back(preprocessor);
+void Tokenizer::add_line_formatter(Formatter formatter) {
+    this->__line_formatters.push_back(formatter);
 }
 
-string Tokenizer::__preprocess(string line) {
+string Tokenizer::__format(string line) {
     auto cp = string(line);
-    for (auto preprocessor : this->__line_preprocessors) {
-        cp = preprocessor(cp);
+    for (auto formatter : this->__line_formatters) {
+        cp = formatter(cp);
     }
 
     return cp;
@@ -47,7 +47,7 @@ std::string Tokenizer::__read_next_line() {
         this->__current_index = match + 1;
         this->__current_line_number++;
 
-        line = this->__preprocess(line);
+        line = this->__format(line);
     } while (line.empty() && this->__current_index < r.size());
 
     return line;
