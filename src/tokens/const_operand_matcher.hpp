@@ -22,7 +22,8 @@ public:
             return true;
         }
 
-        if (raw.value.substr(0, 2) == "0x" && StringUtils::try_parse_int(raw.value.substr(2), &parsed, 16)) {
+        if (raw.value.substr(0, 2) == "0x" && 
+            StringUtils::try_parse_int(raw.value.substr(2), &parsed, 16)) {
             *outToken = new ConstOperand(raw, parsed);
             return true;
         }

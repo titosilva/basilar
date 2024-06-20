@@ -23,7 +23,13 @@ public:
 
     static bool try_parse_int(string str, int* out, int base = 10) {
         try {
-            *out = stoi(str, nullptr, base);
+            size_t idx;
+
+            *out = stoi(str, &idx, base);
+            if (idx != str.size()) {
+                return false;
+            }
+
             return true;
         } catch (...) {
             return false;
