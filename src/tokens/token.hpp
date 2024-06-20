@@ -17,23 +17,25 @@ struct RawToken {
 class Token {
 public:
     Token(RawToken raw) {
-        source_line = pair<int, string>(raw.source_line_number, raw.source_line);
-        source_column = pair<int, string>(raw.source_column_number, raw.value);
+        _source_line = pair<int, string>(raw.source_line_number, raw.source_line);
+        _source_column = pair<int, string>(raw.source_column_number, raw.value);
+        this->raw = raw;
     }
 
     virtual string get_type_name() = 0;
     virtual string get_value() = 0;
 
     pair<int, string> get_source_line() {
-        return pair<int, string>(source_line);
+        return pair<int, string>(_source_line);
     }
 
     pair<int, string> get_source_column() {
-        return pair<int, string>(source_column);
+        return pair<int, string>(_source_column);
     }
-private:
-    pair<int, string> source_line;
-    pair<int, string> source_column;
+protected:
+    pair<int, string> _source_line;
+    pair<int, string> _source_column;
+    RawToken raw;
 };
 
 // SHOULD NEVER BE USED

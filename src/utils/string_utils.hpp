@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 using namespace std;
 
@@ -18,6 +19,15 @@ public:
         }
 
         return cp;
+    }
+
+    static bool try_parse_int(string str, int* out, int base = 10) {
+        try {
+            *out = stoi(str, nullptr, base);
+            return true;
+        } catch (...) {
+            return false;
+        }
     }
 };
 
