@@ -9,7 +9,9 @@
 
 #include "../friend_test.hpp"
 #include "formatter.hpp"
-#include "token.hpp"
+#include "../tokens/token.hpp"
+
+using namespace basilar::tokens;
 
 namespace basilar::tokenizer {
 
@@ -29,7 +31,8 @@ class Tokenizer {
     }
 
     bool next_line();
-    Token next_token();
+    Token* next_token();
+    RawToken next_raw_token();
 
     AllowInternalTestFor(Tokenizer);
 
@@ -41,7 +44,8 @@ class Tokenizer {
     int __current_line_number;
     int __current_index;
     std::vector<Formatter> __line_formatters;
-    std::queue<Token> __tokens;
+    std::queue<Token*> __tokens;
+    std::queue<RawToken> __raw_tokens;
 };
 
 std::vector<std::string> split_line_in_spaces_and_tabs(const std::string& line);

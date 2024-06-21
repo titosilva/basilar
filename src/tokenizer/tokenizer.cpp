@@ -1,7 +1,6 @@
 #include <string>
 
 #include "tokenizer.hpp"
-#include "token.hpp"
 
 using namespace std;
 namespace basilar::tokenizer {
@@ -54,25 +53,30 @@ std::string Tokenizer::__read_next_line() {
 }
 
 void Tokenizer::__tokenize(std::string line) {
-    this->__tokens = queue<Token>();
+    this->__tokens = queue<Token*>();
+    this->__raw_tokens = queue<RawToken>();
 
-    auto tokens = split_line_in_spaces_and_tabs(line);
-    for (auto token : tokens) {
-        auto t = Token(
-            TokenType::LABEL,
-            token,
-            line,
-            this->__current_line_number
-        );
-
-        this->__tokens.push(t);
+    auto pieces = split_line_in_spaces_and_tabs(line);
+    for (int i = 0; i < pieces.size(); i++) {
+        this->__raw_tokens.push(RawToken {
+            .source_line_number = this->__current_line_number,
+            .source_line = line,
+            .source_column_number = i,
+            .value = pieces[i],
+        });
     }
 }
 
-Token Tokenizer::next_token() {
+Token* Tokenizer::next_token() {
     auto token = this->__tokens.front();
     this->__tokens.pop();
     return token;
+}
+
+RawToken Tokenizer::next_raw_token() {
+    auto raw_token = this->__raw_tokens.front();
+    this->__raw_tokens.pop();
+    return raw_token;
 }
 
 vector<string> split_line_in_spaces_and_tabs(const string& line) {
@@ -95,4 +99,4 @@ vector<string> split_line_in_spaces_and_tabs(const string& line) {
     return tokens;
 }
 
-} // namespace basilar::tokens
+} // namespace basilar::tokenizer

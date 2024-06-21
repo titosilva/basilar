@@ -106,13 +106,13 @@ DefineTestSuiteFor(Tokenizer)
         tokenizer.with_common_formatters();
 
         ASSERT_TRUE(tokenizer.next_line());
-        auto token = tokenizer.next_token();
+        auto token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "rot1:");
 
-        token = tokenizer.next_token();
+        token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "jmp");
 
-        token = tokenizer.next_token();
+        token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "a1");
     }
 
@@ -123,10 +123,10 @@ DefineTestSuiteFor(Tokenizer)
         ASSERT_TRUE(tokenizer.next_line());
         ASSERT_TRUE(tokenizer.next_line());
 
-        auto token = tokenizer.next_token();
+        auto token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "jmp");
 
-        token = tokenizer.next_token();
+        token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "a3");
 
         ASSERT_FALSE(tokenizer.next_line());
@@ -137,20 +137,20 @@ DefineTestSuiteFor(Tokenizer)
         tokenizer.with_common_formatters();
 
         ASSERT_TRUE(tokenizer.next_line());
-        auto token = tokenizer.next_token();
+        auto token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "rot1:");
 
-        token = tokenizer.next_token();
+        token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "jmp");
 
-        token = tokenizer.next_token();
+        token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "a1");
 
         ASSERT_TRUE(tokenizer.next_line());
-        token = tokenizer.next_token();
+        token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "jmp");
 
-        token = tokenizer.next_token();
+        token = tokenizer.next_raw_token();
         ASSERT_EQ(token.value, "a3");
 
         ASSERT_FALSE(tokenizer.next_line());
