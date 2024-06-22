@@ -11,11 +11,11 @@ DefineGlobalTestSuiteFor(ParserOps)
         auto result = parser.parse("123abc");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().tokens.size(), 2);
-        ASSERT_EQ(result.value().tokens[0].type, "number");
-        ASSERT_EQ(result.value().tokens[0].value, "123");
-        ASSERT_EQ(result.value().tokens[1].type, "letter");
-        ASSERT_EQ(result.value().tokens[1].value, "abc");
+        ASSERT_EQ(result.value().get_tokens().size(), 2);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "number");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "123");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "letter");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "abc");
     }
 
     DefineGlobalTest(ShouldNotParseAnyTokens__WhenFirstParserFails) {
@@ -37,9 +37,9 @@ DefineGlobalTestSuiteFor(ParserOps)
         auto result = parser.parse("abc123");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().tokens.size(), 1);
-        ASSERT_EQ(result.value().tokens[0].type, "letter");
-        ASSERT_EQ(result.value().tokens[0].value, "abc");
+        ASSERT_EQ(result.value().get_tokens().size(), 1);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "letter");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "abc");
     }
 
     DefineGlobalTest(ShouldNotParseAnyTokens__WhenBothParsersFail) {
@@ -54,9 +54,9 @@ DefineGlobalTestSuiteFor(ParserOps)
         auto result = parser.parse("123");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().tokens.size(), 1);
-        ASSERT_EQ(result.value().tokens[0].type, "number");
-        ASSERT_EQ(result.value().tokens[0].value, "123");
+        ASSERT_EQ(result.value().get_tokens().size(), 1);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "number");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "123");
     }
 
     DefineGlobalTest(ShouldParseAllTokens__WhenOptionalCombined) {
@@ -64,11 +64,11 @@ DefineGlobalTestSuiteFor(ParserOps)
         auto result = parser.parse("123abc");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().tokens.size(), 2);
-        ASSERT_EQ(result.value().tokens[0].type, "number");
-        ASSERT_EQ(result.value().tokens[0].value, "123");
-        ASSERT_EQ(result.value().tokens[1].type, "letter");
-        ASSERT_EQ(result.value().tokens[1].value, "abc");
+        ASSERT_EQ(result.value().get_tokens().size(), 2);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "number");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "123");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "letter");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "abc");
     }
 
     DefineGlobalTest(ShouldNotParseAnyTokens__WhenOptionalCombined__AndFirstParserFails) {
@@ -83,9 +83,9 @@ DefineGlobalTestSuiteFor(ParserOps)
         auto result = parser.parse("123**");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().tokens.size(), 1);
-        ASSERT_EQ(result.value().tokens[0].type, "number");
-        ASSERT_EQ(result.value().tokens[0].value, "123");
+        ASSERT_EQ(result.value().get_tokens().size(), 1);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "number");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "123");
     }
 
 EndGlobalTestSuite
