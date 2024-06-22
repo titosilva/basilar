@@ -19,4 +19,20 @@
         FriendTest<class_name> test_accessor; \
         test_accessor.test_name(); \
     }
+
+#define DefineGlobalTestSuiteFor(class_name) \
+    class class_name##Tests { \
+    public:
+
+#define EndGlobalTestSuite \
+    };
+
+#define DefineGlobalTest(test_name) \
+    void test_name()
+
+#define RunGlobalTest(class_name, test_name) \
+    TEST(class_name##Tests, test_name) { \
+        class_name##Tests test_accessor; \
+        test_accessor.test_name(); \
+    }
     
