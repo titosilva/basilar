@@ -11,21 +11,19 @@ const TokenParser Blank = Ignore(Whitespace);
 
 const TokenParser LabelDef = Blank >> Label >> Blank >> ":" >> JoinAs("label");
 
-const TokenParser EquDirective = 
+const TokenParser EquDirectiveCall = 
     Blank >> "equ" >> Blank
     >> Required(Number, "Expected number after equ directive") 
     >> Blank 
-    >> Required(End, "Too many arguments after equ directive")
-    >> JoinAs("equ");
+    >> Required(End, "Too many arguments after equ directive");
 
-const TokenParser IfDirective = 
+const TokenParser IfDirectiveCall = 
     Blank >> "if" >> Blank
     >> Required(Label, "Expected label after if directive") 
     >> Blank
-    >> Required(End, "Too many arguments after if directive")
-    >> JoinAs("if");
+    >> Required(End, "Too many arguments after if directive");
 
 const TokenParser PreprocessingLine = 
-    Optional(LabelDef) >> (EquDirective | IfDirective)
+    Optional(LabelDef) >> (EquDirectiveCall | IfDirectiveCall);
 
 } // namespace basilar::tokens
