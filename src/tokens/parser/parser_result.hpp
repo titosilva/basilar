@@ -17,7 +17,6 @@ public:
     vector<Token> get_tokens() { return vector<Token>(__tokens); }
 
     string remaining_input;
-    bool should_validate;
 
     AllowInternalTestFor(ParseContext);
 private:
