@@ -20,7 +20,7 @@ const TokenParser EquDirective =
 
 const TokenParser IfDirective = 
     Blank >> "if" >> Blank
-    >> Required(Label, "Expected item after if directive") 
+    >> Required(Label, "Expected label after if directive") 
     >> Blank
     >> Required(End, "Too many arguments after if directive")
     >> JoinAs("if");

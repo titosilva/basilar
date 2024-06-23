@@ -45,17 +45,6 @@ DefineGlobalTestSuiteFor(UtilityParsers)
         ASSERT_EQ(result.value().remaining_input, "");
     }
 
-    DefineGlobalTest(End__ShouldParseToken__IfNewLine) {
-        auto parser = End;
-        auto result = parser.parse("\n");
-
-        ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "end");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "\n");
-        ASSERT_EQ(result.value().remaining_input, "");
-    }
-
     DefineGlobalTest(End__ShouldNotParseToken__IfInputNotEmpty) {
         auto parser = End;
         auto result = parser.parse("abc");
