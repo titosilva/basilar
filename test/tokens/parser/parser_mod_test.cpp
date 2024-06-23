@@ -66,6 +66,21 @@ DefineGlobalTestSuiteFor(ParserMods)
         ASSERT_EQ(result.value().get_tokens()[0].value, "123");
         ASSERT_EQ(result.value().remaining_input, "");
     }
+
+    DefineGlobalTest(Repeat__ShouldGetTokens__IfParserMatches) {
+        auto parser = Repeat(Number >> Ignore(Whitespace), 3);
+        auto result = parser.parse("123 456 789");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 3);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "number");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "123");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "number");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "456");
+        ASSERT_EQ(result.value().get_tokens()[2].type, "number");
+        ASSERT_EQ(result.value().get_tokens()[2].value, "789");
+        ASSERT_EQ(result.value().remaining_input, "");
+    }
 EndTestSuite
 
 RunGlobalTest(ParserMods, Optional__ShouldGetTokens__IfParserMatches)
@@ -74,3 +89,4 @@ RunGlobalTest(ParserMods, Ignore__ShouldIgnore__IfParserMatches)
 RunGlobalTest(ParserMods, Ignore__ShouldIgnore__IfParserDoesNotMatch)
 RunGlobalTest(ParserMods, Required__ShouldThrowException__IfParserDoesNotMatch)
 RunGlobalTest(ParserMods, Required__ShouldGetTokens__IfParserMatches)
+RunGlobalTest(ParserMods, Repeat__ShouldGetTokens__IfParserMatches)

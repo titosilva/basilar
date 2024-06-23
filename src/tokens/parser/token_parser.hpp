@@ -30,7 +30,15 @@ private:
 };
 
 TokenParser operator|(TokenParser lhs, TokenParser rhs);
+TokenParser operator|(TokenParser lhs, string rhs);
+
 TokenParser operator>>(TokenParser lhs, TokenParser rhs);
+TokenParser operator>>(TokenParser lhs, string rhs);
+
 TokenParser operator<<(TokenParser lhs, TokenParser rhs);
+TokenParser operator<<(TokenParser lhs, string rhs);
+
+TokenParser operator+(TokenParser lhs, TokenParser rhs);
+TokenParser operator+(TokenParser lhs, string rhs);
 
 } // namespace basilar::tokens::parser

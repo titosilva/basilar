@@ -88,6 +88,17 @@ DefineGlobalTestSuiteFor(ParserOps)
         ASSERT_EQ(result.value().get_tokens()[0].value, "123");
     }
 
+    DefineGlobalTest(ShouldParseExactTokens__WhenAdditionIsUsedToString) {
+        auto parser = RegexParser("^[0-9]+", "number") + "abc";
+        auto result = parser.parse("123abc");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "number");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "123");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "abc");
+    }
 EndGlobalTestSuite
 
 RunGlobalTest(ParserOps, ShouldParseAllTokens__WhenDirectlyCombined)

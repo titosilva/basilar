@@ -48,4 +48,23 @@ const ParserMod<string> Required = [](TokenParser parser, string message) -> Tok
     });
 };
 
+const ParserMod<int> Repeat = [](TokenParser parser, int count) -> TokenParser {
+    return TokenParser([=](ParseContext ctx) -> ParseResult {
+        vector<Token> tokens;
+        ParseContext current_ctx = ctx;
+
+        for (int i = 0; i < count; i++) {
+            ParseResult result = parser.parse(current_ctx);
+
+            if (!result.has_value()) {
+                return fail_parse();
+            }
+
+            current_ctx = result.value();
+        }
+
+        return current_ctx;
+    });
+};
+
 } // namespace basilar::tokens::parser_modifiers
