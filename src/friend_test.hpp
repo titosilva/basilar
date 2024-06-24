@@ -5,4 +5,3 @@
 template<class T>
 class FriendTest {
 };
-

@@ -13,7 +13,7 @@ template <typename... ParamTypes>
 using ParserMod = function<TokenParser(TokenParser, ParamTypes...)>;
 
 const ParserMod<> Optional = [](TokenParser parser) -> TokenParser {
-    return TokenParser([parser](ParseContext ctx) -> ParseResult {
+    return TokenParser([=](ParseContext ctx) -> ParseResult {
         ParseResult result = parser.parse(ctx);
 
         if (result.has_value()) {
@@ -24,8 +24,8 @@ const ParserMod<> Optional = [](TokenParser parser) -> TokenParser {
     });
 };
 
-const ParserMod<> Ignore = [](TokenParser parser) -> TokenParser {
-    return TokenParser([parser](ParseContext ctx) -> ParseResult {
+const ParserMod<> Ignored = [](TokenParser parser) -> TokenParser {
+    return TokenParser([=](ParseContext ctx) -> ParseResult {
         ParseResult result = parser.parse(ctx);
 
         if (!result.has_value()) {
@@ -36,7 +36,19 @@ const ParserMod<> Ignore = [](TokenParser parser) -> TokenParser {
     });
 };
 
-const ParserMod<string> Required = [](TokenParser parser, string message) -> TokenParser {
+const ParserMod<> Hidden = [](TokenParser parser) -> TokenParser {
+    return TokenParser([=](ParseContext ctx) -> ParseResult {
+        ParseResult result = parser.parse(ctx);
+
+        if (!result.has_value()) {
+            return fail_parse();
+        }
+
+        return succeed_parse(ctx.get_tokens(), result.value().remaining_input);
+    });
+};
+
+const ParserMod<string> ThrowIfNot = [](TokenParser parser, string message) -> TokenParser {
     return TokenParser([=](ParseContext ctx) -> ParseResult {
         ParseResult result = parser.parse(ctx);
 
@@ -45,6 +57,18 @@ const ParserMod<string> Required = [](TokenParser parser, string message) -> Tok
         }
 
         return result;
+    });
+};
+
+const ParserMod<string> ThrowIf = [](TokenParser parser, string message) -> TokenParser {
+    return TokenParser([=](ParseContext ctx) -> ParseResult {
+        ParseResult result = parser.parse(ctx);
+
+        if (result.has_value()) {
+            throw ParsingException(message);
+        }
+
+        return ctx;
     });
 };
 

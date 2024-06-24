@@ -1,7 +1,10 @@
 #pragma once
+#include "../src/friend_test.hpp"
 
 #include <gtest/gtest.h>
-#include "../src/friend_test.hpp"
+#include <iostream>
+
+using namespace std;
 
 #define DefineTestSuiteFor(class_name) \
     template<> \
@@ -36,3 +39,9 @@
         test_accessor.test_name(); \
     }
     
+class TestLogger {
+public:
+    static void log(const std::string& message) {
+        std::cout << message << std::endl;
+    }
+};

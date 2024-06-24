@@ -7,6 +7,10 @@ namespace basilar::tokens::parser {
     TokenParser Literal(string value);
     TokenParser JoinAs(string type);
 
+    const TokenParser ButFail = TokenParser([](ParseContext ctx) -> ParseResult {
+        return fail_parse();
+    });
+
     const TokenParser Whitespace = RegexParser(R"(\s+)", "whitespace");
     const TokenParser Newline = RegexParser(R"(\n)", "newline");
     const TokenParser Number = RegexParser(R"(\d+)", "number");

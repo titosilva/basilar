@@ -1,6 +1,5 @@
 #include "token_parser.hpp"
 #include "utility_parsers.hpp"
-#include <iostream>
 
 using namespace std;
 
@@ -30,21 +29,27 @@ TokenParser operator|(TokenParser lhs, string rhs) {
     return lhs | Literal(rhs);
 }
 
+TokenParser operator|(string lhs, TokenParser rhs) {
+    return Literal(lhs) | rhs;
+}
+
 TokenParser operator>>(TokenParser lhs, TokenParser rhs) {
     return TokenParser([=](ParseContext ctx) -> ParseResult {
         ParseResult result = lhs.parse(ctx);
         if (!result.has_value()) {
-            cout << "Failed to parse left side of >> operator\n" << endl;
             return nullopt;
         }
 
-        cout << "Parsed left side of >> operator\n" << endl;
         return rhs.parse(result.value());
     });
 }
 
 TokenParser operator>>(TokenParser lhs, string rhs) {
     return lhs >> Literal(rhs);
+}
+
+TokenParser operator>>(string lhs, TokenParser rhs) {
+    return Literal(lhs) >> rhs;
 }
 
 TokenParser operator<<(TokenParser lhs, TokenParser rhs) {
@@ -56,11 +61,9 @@ TokenParser operator<<(TokenParser lhs, TokenParser rhs) {
 
         ParseResult rightResult = rhs.parse(result.value());
         if (!rightResult.has_value()) {
-            cout << "Failed to parse right side of << operator\n" << endl;
             return result;
         }
 
-        cout << "Parsed right side of << operator\n" << endl;
         return rightResult;
     });
 }
@@ -69,12 +72,20 @@ TokenParser operator<<(TokenParser lhs, string rhs) {
     return lhs << Literal(rhs);
 }
 
+TokenParser operator<<(string lhs, TokenParser rhs) {
+    return Literal(lhs) << rhs;
+}
+
 TokenParser operator+(TokenParser lhs, TokenParser rhs) {
     return lhs >> rhs;
 }
 
 TokenParser operator+(TokenParser lhs, string rhs) {
     return lhs + Literal(rhs);
+}
+
+TokenParser operator+(string lhs, TokenParser rhs) {
+    return Literal(lhs) + rhs;
 }
 
 } // namespace basilar::tokens::parser

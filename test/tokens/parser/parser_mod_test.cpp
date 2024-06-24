@@ -30,7 +30,7 @@ DefineGlobalTestSuiteFor(ParserMods)
     }
 
     DefineGlobalTest(Ignore__ShouldIgnore__IfParserMatches) {
-        auto parser = Ignore(Whitespace) >> Number;
+        auto parser = Ignored(Whitespace) >> Number;
         auto result = parser.parse("    123");
 
         ASSERT_TRUE(result.has_value());
@@ -41,7 +41,7 @@ DefineGlobalTestSuiteFor(ParserMods)
     }
 
     DefineGlobalTest(Ignore__ShouldIgnore__IfParserDoesNotMatch) {
-        auto parser = Ignore(Whitespace) >> Number;
+        auto parser = Ignored(Whitespace) >> Number;
         auto result = parser.parse("123");
 
         ASSERT_TRUE(result.has_value());
@@ -52,12 +52,12 @@ DefineGlobalTestSuiteFor(ParserMods)
     }
 
     DefineGlobalTest(Required__ShouldThrowException__IfParserDoesNotMatch) {
-        auto parser = Required(Number, "Expected a number");
+        auto parser = ThrowIfNot(Number, "Expected a number");
         ASSERT_THROW(parser.parse("abc"), ParsingException);
     }
 
     DefineGlobalTest(Required__ShouldGetTokens__IfParserMatches) {
-        auto parser = Required(Number, "Expected a number");
+        auto parser = ThrowIfNot(Number, "Expected a number");
         auto result = parser.parse("123");
 
         ASSERT_TRUE(result.has_value());
@@ -68,7 +68,7 @@ DefineGlobalTestSuiteFor(ParserMods)
     }
 
     DefineGlobalTest(Repeat__ShouldGetTokens__IfParserMatches) {
-        auto parser = Repeat(Number >> Ignore(Whitespace), 3);
+        auto parser = Repeat(Number >> Ignored(Whitespace), 3);
         auto result = parser.parse("123 456 789");
 
         ASSERT_TRUE(result.has_value());
@@ -81,6 +81,20 @@ DefineGlobalTestSuiteFor(ParserMods)
         ASSERT_EQ(result.value().get_tokens()[2].value, "789");
         ASSERT_EQ(result.value().remaining_input, "");
     }
+
+    DefineGlobalTest(FailIf__ShouldThrowException__IfParserMatches) {
+        auto parser = ThrowIf(Number, "Expected not a number");
+        ASSERT_THROW(parser.parse("123"), ParsingException);
+    }
+
+    DefineGlobalTest(FailIf__ShouldLetRemainingInput__IfParserDoesNotMatch) {
+        auto parser = ThrowIf(Number, "Expected not a number");
+        auto result = parser.parse("abc");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 0);
+        ASSERT_EQ(result.value().remaining_input, "abc");
+    }
 EndTestSuite
 
 RunGlobalTest(ParserMods, Optional__ShouldGetTokens__IfParserMatches)
@@ -90,3 +104,5 @@ RunGlobalTest(ParserMods, Ignore__ShouldIgnore__IfParserDoesNotMatch)
 RunGlobalTest(ParserMods, Required__ShouldThrowException__IfParserDoesNotMatch)
 RunGlobalTest(ParserMods, Required__ShouldGetTokens__IfParserMatches)
 RunGlobalTest(ParserMods, Repeat__ShouldGetTokens__IfParserMatches)
+RunGlobalTest(ParserMods, FailIf__ShouldThrowException__IfParserMatches)
+RunGlobalTest(ParserMods, FailIf__ShouldLetRemainingInput__IfParserDoesNotMatch)
