@@ -7,7 +7,7 @@ namespace basilar::tokens::parser {
     TokenParser Literal(string value);
     TokenParser JoinAs(string type);
 
-    const TokenParser AndFail = TokenParser([](ParseContext ctx) -> ParseResult {
+    const TokenParser Fail = TokenParser([](ParseContext ctx) -> ParseResult {
         return fail_parse();
     });
 

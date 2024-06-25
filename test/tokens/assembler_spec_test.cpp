@@ -79,7 +79,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 
     DefineGlobalTest(EquDirective__ShouldParse__WhenNumberIsProvided) {
         auto parser = EquDirectiveLine;
-        auto result = parser.parse("label: equ 123");
+        auto result = parser.parse("label: equ 123   ");
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 3);
