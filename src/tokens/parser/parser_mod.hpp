@@ -48,7 +48,7 @@ const ParserMod<> Hidden = [](TokenParser parser) -> TokenParser {
     });
 };
 
-const ParserMod<string> ThrowIfNot = [](TokenParser parser, string message) -> TokenParser {
+const ParserMod<string> Required = [](TokenParser parser, string message) -> TokenParser {
     return TokenParser([=](ParseContext ctx) -> ParseResult {
         ParseResult result = parser.parse(ctx);
 
@@ -60,7 +60,7 @@ const ParserMod<string> ThrowIfNot = [](TokenParser parser, string message) -> T
     });
 };
 
-const ParserMod<string> ThrowIf = [](TokenParser parser, string message) -> TokenParser {
+const ParserMod<string> Forbidden = [](TokenParser parser, string message) -> TokenParser {
     return TokenParser([=](ParseContext ctx) -> ParseResult {
         ParseResult result = parser.parse(ctx);
 

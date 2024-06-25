@@ -6,6 +6,7 @@ using namespace basilar::tokens::parser;
 #define Def static TokenParser
 #define As =
 #define Else |
+#define EndDef
 
 namespace basilar::tokens {
     Def Blank As Ignored(Whitespace);
@@ -15,18 +16,19 @@ namespace basilar::tokens {
     Def MalformedLabel As RegexParser(R"(.*:)", "malformed_label");
 
     Def LabelDef As Label >> ":" >> Blank >> JoinAs("label")
-    Else ThrowIf(MalformedLabel, "Malformed label definition") >> ButFail;
+    Else Forbidden(MalformedLabel, "Malformed label definition") >> ButFail;
 
     Def EquDirectiveLine As
         LabelDef >> "equ" >> Blank
-        >> ThrowIfNot(Number, "Expected number after equ directive") >> Blank 
-        >> ThrowIfNot(Close, "Too many arguments after equ directive")
-    Else ThrowIf(Blank >> "equ", "Expected label before equ directive") >> ButFail;
+        >> Required(Number, "Expected number after equ directive") >> Blank 
+        >> Required(Close, "Too many arguments after equ directive")
+    Else Forbidden(Blank >> "equ", "Expected label before equ directive") >> ButFail;
 
     Def IfDirectiveLine As 
         Optional(LabelDef) >> "if" >> Blank
-        >> ThrowIfNot(Label | Number, "Expected label or number after if directive") >> Blank
-        >> ThrowIfNot(Close, "Too many arguments after if directive");
+        >> Required(Label | Number, "Expected label or number after if directive") >> Blank
+        >> Required(Close, "Too many arguments after if directive");
+    EndDef
 
     Def PreprocessingLine As EquDirectiveLine | IfDirectiveLine;
 

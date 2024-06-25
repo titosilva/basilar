@@ -52,12 +52,12 @@ DefineGlobalTestSuiteFor(ParserMods)
     }
 
     DefineGlobalTest(Required__ShouldThrowException__IfParserDoesNotMatch) {
-        auto parser = ThrowIfNot(Number, "Expected a number");
+        auto parser = Required(Number, "Expected a number");
         ASSERT_THROW(parser.parse("abc"), ParsingException);
     }
 
     DefineGlobalTest(Required__ShouldGetTokens__IfParserMatches) {
-        auto parser = ThrowIfNot(Number, "Expected a number");
+        auto parser = Required(Number, "Expected a number");
         auto result = parser.parse("123");
 
         ASSERT_TRUE(result.has_value());
@@ -83,12 +83,12 @@ DefineGlobalTestSuiteFor(ParserMods)
     }
 
     DefineGlobalTest(FailIf__ShouldThrowException__IfParserMatches) {
-        auto parser = ThrowIf(Number, "Expected not a number");
+        auto parser = Forbidden(Number, "Expected not a number");
         ASSERT_THROW(parser.parse("123"), ParsingException);
     }
 
     DefineGlobalTest(FailIf__ShouldLetRemainingInput__IfParserDoesNotMatch) {
-        auto parser = ThrowIf(Number, "Expected not a number");
+        auto parser = Forbidden(Number, "Expected not a number");
         auto result = parser.parse("abc");
 
         ASSERT_TRUE(result.has_value());
