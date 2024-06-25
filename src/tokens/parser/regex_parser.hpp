@@ -8,6 +8,7 @@ namespace basilar::tokens::parser {
 
 class RegexParser : public TokenParser {
 public:
+    RegexParser(string re) : RegexParser(re, "r") {}
     RegexParser(string re, string type) : RegexParser(regex("^" + re), type) {}
 
     RegexParser(regex re, string type) : TokenParser([re, type](ParseContext ctx) -> ParseResult {

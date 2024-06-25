@@ -77,6 +77,11 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_THROW(parser.parse("label@: and a b"), ParsingException);
     }
 
+    DefineGlobalTest(LabelDef__ShouldThrow__WhenDoubleDefinitionOfLabel) {
+        auto parser = LabelDef;
+        ASSERT_THROW(parser.parse("label: and a b label: and a b"), ParsingException);
+    }
+
     DefineGlobalTest(EquDirective__ShouldParse__WhenNumberIsProvided) {
         auto parser = EquDirectiveLine;
         auto result = parser.parse("label: equ 123   ");
@@ -116,6 +121,7 @@ RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition__WhenLabelCon
 RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition__WhenThereIsSpaceBeforeColon)
 RunGlobalTest(AssemblerSpecs, LabelDef__ShouldThrow__WhenLabelStartsWithNumber)
 RunGlobalTest(AssemblerSpecs, LabelDef__ShouldThrow__WhenLabelContainsInvalidChars)
+RunGlobalTest(AssemblerSpecs, LabelDef__ShouldThrow__WhenDoubleDefinitionOfLabel)
 RunGlobalTest(AssemblerSpecs, EquDirective__ShouldParse__WhenNumberIsProvided)
 RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenNumberIsNotProvided)
 RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenLabelIsNotProvided)
