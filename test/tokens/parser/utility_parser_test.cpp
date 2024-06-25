@@ -13,7 +13,7 @@ DefineGlobalTestSuiteFor(UtilityParsers)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "number_with_spaces");
         ASSERT_EQ(result.value().get_tokens()[0].value, "    123\t    ");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(Literal__ShouldParseToken__IfExactMatch) {
@@ -24,7 +24,7 @@ DefineGlobalTestSuiteFor(UtilityParsers)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
         ASSERT_EQ(result.value().get_tokens()[0].value, "123");
-        ASSERT_EQ(result.value().remaining_input, "abc");
+        ASSERT_EQ(result.value().get_remaining_input(), "abc");
     }
 
     DefineGlobalTest(Literal__ShouldNotParseToken__IfExactMatchFails) {
@@ -42,7 +42,7 @@ DefineGlobalTestSuiteFor(UtilityParsers)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "end");
         ASSERT_EQ(result.value().get_tokens()[0].value, "");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(End__ShouldNotParseToken__IfInputNotEmpty) {

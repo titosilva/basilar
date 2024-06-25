@@ -4,14 +4,14 @@ namespace basilar::tokens::parser {
 
 TokenParser Literal(string value) {
     return TokenParser([value](ParseContext ctx) -> ParseResult {
-        if (ctx.remaining_input.find(value) != 0) {
+        if (ctx.get_remaining_input().find(value) != 0) {
             return fail_parse();
         }
 
         auto new_token = Token("literal", value);
         auto new_tokens = ctx.get_tokens();
         new_tokens.push_back(new_token);
-        return succeed_parse(new_tokens, ctx.remaining_input.substr(value.size()));
+        return succeed_parse(new_tokens, ctx.get_remaining_input().substr(value.size()));
     });
 }
 
@@ -25,7 +25,7 @@ TokenParser JoinAs(string type) {
         }
 
         auto newToken = Token(type, value);
-        return succeed_parse(newToken, ctx.remaining_input);
+        return succeed_parse(newToken, ctx.get_remaining_input());
     });
 }
 

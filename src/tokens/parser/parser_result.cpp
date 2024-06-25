@@ -37,7 +37,7 @@ ParseResult combine_results(ParseResult first, ParseResult second) {
         return fail_parse();
     }
 
-    return succeed_parse(first.value().get_tokens(), second.value().get_tokens(), second.value().remaining_input);
+    return succeed_parse(first.value().get_tokens(), second.value().get_tokens(), second.value().get_remaining_input());
 }
 
 } // namespace basilar::tokens::parser

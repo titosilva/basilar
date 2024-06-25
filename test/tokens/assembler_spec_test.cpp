@@ -14,7 +14,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "label");
         ASSERT_EQ(result.value().get_tokens()[0].value, "label_123");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(Label__ShouldNotParseSequencesStartingWithNumber) {
@@ -24,7 +24,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_FALSE(result.has_value()) 
             << "Label parsed result starting with number: " 
             << result.value().get_tokens()[0].value 
-            << "; Remaining input: " << result.value().remaining_input;
+            << "; Remaining input: " << result.value().get_remaining_input();
     }
 
     DefineGlobalTest(Label__ShouldNotParseSequencesWithInvalidChars) {
@@ -42,7 +42,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "label");
         ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
-        ASSERT_EQ(result.value().remaining_input, "and a b");
+        ASSERT_EQ(result.value().get_remaining_input(), "and a b");
     }
 
     DefineGlobalTest(LabelDef__ShouldParseLabelDefinition__WhenLabelContainsUnderscore) {
@@ -53,7 +53,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "label");
         ASSERT_EQ(result.value().get_tokens()[0].value, "label_:");
-        ASSERT_EQ(result.value().remaining_input, "and a b");
+        ASSERT_EQ(result.value().get_remaining_input(), "and a b");
     }
 
     DefineGlobalTest(LabelDef__ShouldParseLabelDefinition__WhenThereIsSpaceBeforeColon) {
@@ -64,7 +64,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "label");
         ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
-        ASSERT_EQ(result.value().remaining_input, "and a b");
+        ASSERT_EQ(result.value().get_remaining_input(), "and a b");
     }
 
     DefineGlobalTest(LabelDef__ShouldThrow__WhenLabelStartsWithNumber) {
@@ -89,7 +89,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_EQ(result.value().get_tokens()[1].value, "equ");
         ASSERT_EQ(result.value().get_tokens()[2].type, "number");
         ASSERT_EQ(result.value().get_tokens()[2].value, "123");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(EquDirective__ShouldThrow__WhenNumberIsNotProvided) {

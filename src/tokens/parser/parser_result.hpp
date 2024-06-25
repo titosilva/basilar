@@ -11,16 +11,17 @@ namespace basilar::tokens::parser {
 
 struct ParseContext {
 public:
-    ParseContext(string input) : __tokens(vector<Token>()), remaining_input(input) {}
-    ParseContext(vector<Token> tokens, string remaining_input) : __tokens(tokens), remaining_input(remaining_input) {}
+    ParseContext(string input) : __tokens(vector<Token>()), __remaining_input(input) {}
+    ParseContext(vector<Token> tokens, string remaining_input) : __tokens(tokens), __remaining_input(remaining_input) {}
 
-    vector<Token> get_tokens() { return vector<Token>(__tokens); }
+    vector<Token> get_tokens() const { return vector<Token>(__tokens); }
 
-    string remaining_input;
+    const string get_remaining_input() const { return string(__remaining_input); }
 
     AllowInternalTestFor(ParseContext);
 private:
     vector<Token> __tokens;
+    string __remaining_input;
 };
 
 typedef optional<ParseContext> ParseResult;

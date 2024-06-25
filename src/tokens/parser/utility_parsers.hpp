@@ -15,7 +15,7 @@ namespace basilar::tokens::parser {
     const TokenParser Newline = RegexParser(R"(\n)", "newline");
     const TokenParser Number = RegexParser(R"(\d+)", "number");
     const TokenParser End = TokenParser([](ParseContext ctx) -> ParseResult {
-        if (ctx.remaining_input.empty()) {
+        if (ctx.get_remaining_input().empty()) {
             return succeed_parse(ctx, "end", "", "");
         }
 

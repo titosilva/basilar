@@ -15,7 +15,7 @@ DefineGlobalTestSuiteFor(ParserMods)
         ASSERT_EQ(result.value().get_tokens()[0].value, "    ");
         ASSERT_EQ(result.value().get_tokens()[1].type, "number");
         ASSERT_EQ(result.value().get_tokens()[1].value, "123");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(Optional__ShouldIgnore__IfParserDoesNotMatch) {
@@ -26,7 +26,7 @@ DefineGlobalTestSuiteFor(ParserMods)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "number");
         ASSERT_EQ(result.value().get_tokens()[0].value, "123");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(Ignore__ShouldIgnore__IfParserMatches) {
@@ -37,7 +37,7 @@ DefineGlobalTestSuiteFor(ParserMods)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "number");
         ASSERT_EQ(result.value().get_tokens()[0].value, "123");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(Ignore__ShouldIgnore__IfParserDoesNotMatch) {
@@ -48,7 +48,7 @@ DefineGlobalTestSuiteFor(ParserMods)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "number");
         ASSERT_EQ(result.value().get_tokens()[0].value, "123");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(Required__ShouldThrowException__IfParserDoesNotMatch) {
@@ -64,7 +64,7 @@ DefineGlobalTestSuiteFor(ParserMods)
         ASSERT_EQ(result.value().get_tokens().size(), 1);
         ASSERT_EQ(result.value().get_tokens()[0].type, "number");
         ASSERT_EQ(result.value().get_tokens()[0].value, "123");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(Repeat__ShouldGetTokens__IfParserMatches) {
@@ -79,7 +79,7 @@ DefineGlobalTestSuiteFor(ParserMods)
         ASSERT_EQ(result.value().get_tokens()[1].value, "456");
         ASSERT_EQ(result.value().get_tokens()[2].type, "number");
         ASSERT_EQ(result.value().get_tokens()[2].value, "789");
-        ASSERT_EQ(result.value().remaining_input, "");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
     DefineGlobalTest(FailIf__ShouldThrowException__IfParserMatches) {
@@ -93,7 +93,7 @@ DefineGlobalTestSuiteFor(ParserMods)
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 0);
-        ASSERT_EQ(result.value().remaining_input, "abc");
+        ASSERT_EQ(result.value().get_remaining_input(), "abc");
     }
 EndTestSuite
 

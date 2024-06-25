@@ -32,7 +32,7 @@ const ParserMod<> Ignored = [](TokenParser parser) -> TokenParser {
             return ctx;
         }
 
-        return succeed_parse(ctx.get_tokens(), result.value().remaining_input);
+        return succeed_parse(ctx.get_tokens(), result.value().get_remaining_input());
     });
 };
 
@@ -44,7 +44,7 @@ const ParserMod<> Hidden = [](TokenParser parser) -> TokenParser {
             return fail_parse();
         }
 
-        return succeed_parse(ctx.get_tokens(), result.value().remaining_input);
+        return succeed_parse(ctx.get_tokens(), result.value().get_remaining_input());
     });
 };
 
