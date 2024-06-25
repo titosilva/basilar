@@ -8,10 +8,7 @@ TokenParser Literal(string value) {
             return fail_parse();
         }
 
-        auto new_token = Token("literal", value);
-        auto new_tokens = ctx.get_tokens();
-        new_tokens.push_back(new_token);
-        return succeed_parse(new_tokens, ctx.get_remaining_input().substr(value.size()));
+        return ctx.add_token("literal", value).with_remaining_input(ctx.get_remaining_input().substr(value.size()));
     });
 }
 
@@ -24,8 +21,7 @@ TokenParser JoinAs(string type) {
             value += token.value;
         }
 
-        auto newToken = Token(type, value);
-        return succeed_parse(newToken, ctx.get_remaining_input());
+        return ctx.reset_tokens().add_token(type, value);
     });
 }
 

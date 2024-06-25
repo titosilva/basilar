@@ -15,7 +15,9 @@ public:
 
         auto input = ctx.get_remaining_input();
         if (regex_search(input, match, re)) {
-            return succeed_parse(ctx, type, match.str(), match.suffix().str());
+            return ctx
+                .add_token(type, match.str())
+                .with_remaining_input(match.suffix().str());
         }
 
         return fail_parse();
