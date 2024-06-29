@@ -1,4 +1,4 @@
-#include "../../../src/tokens/parser/utility_parsers.hpp"
+#include "../../../src/assembler/tokens/parser/utility_parsers.hpp"
 #include "../../test_suite.hpp"
 
 using namespace std;

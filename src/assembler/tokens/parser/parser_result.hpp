@@ -2,7 +2,7 @@
 
 #include "token.hpp"
 #include "parse_context.hpp"
-#include "../../friend_test.hpp"
+#include "../../../friend_test.hpp"
 
 #include <optional>
 #include <vector>

@@ -1,4 +1,4 @@
-#include "../../../src/tokens/parser/parser.hpp"
+#include "../../../src/assembler/tokens/parser/parser.hpp"
 #include "../../test_suite.hpp"
 
 using namespace basilar::tokens::parser;

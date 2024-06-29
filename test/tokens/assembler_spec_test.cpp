@@ -1,5 +1,5 @@
 #include "../test_suite.hpp"
-#include "../../src/tokens/assembler_specs.hpp"
+#include "../../src/assembler/tokens/assembler_specs.hpp"
 
 using namespace std;
 using namespace basilar::tokens;

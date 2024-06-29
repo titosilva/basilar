@@ -1,4 +1,4 @@
-#include "../../../src/tokens/parser/regex_parser.hpp"
+#include "../../../src/assembler/tokens/parser/regex_parser.hpp"
 #include "../../test_suite.hpp"
 
 using namespace std;

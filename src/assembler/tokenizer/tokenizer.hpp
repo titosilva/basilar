@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "../friend_test.hpp"
+#include "../../friend_test.hpp"
 #include "formatter.hpp"
 #include "../tokens/parser/parser.hpp"
 

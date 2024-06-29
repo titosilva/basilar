@@ -1,5 +1,5 @@
 #include "../test_suite.hpp"
-#include "../../src/tokenizer/tokenizer.hpp"
+#include "../../src/assembler/tokenizer/tokenizer.hpp"
 
 using namespace std;
 using namespace basilar::tokenizer;

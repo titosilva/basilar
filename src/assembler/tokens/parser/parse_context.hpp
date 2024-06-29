@@ -1,7 +1,7 @@
 #pragma once
 
 #include "token.hpp"
-#include "../../friend_test.hpp"
+#include "../../../friend_test.hpp"
 #include <vector>
 
 using namespace std;
