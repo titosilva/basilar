@@ -9,18 +9,20 @@
 
 #include "../friend_test.hpp"
 #include "formatter.hpp"
-#include "../tokens/token.hpp"
+#include "../tokens/parser/parser.hpp"
 
-using namespace basilar::tokens;
+using namespace basilar::tokens::parser;
 
 namespace basilar::tokenizer {
 
 class Tokenizer {
    public:
 
-    Tokenizer(std::string file_content) : __file_content(file_content), __current_line_number(0), __current_index(0) {}
+    Tokenizer(std::string file_content) : __file_content(file_content), __current_line_number(0), __current_index(0) { }
 
     void add_line_formatter(Formatter formatter);
+    void with_parser(TokenParser parser);
+
     void with_common_formatters() {
         this->add_line_formatter(RemoveComments);
         this->add_line_formatter(Trim);
@@ -31,23 +33,20 @@ class Tokenizer {
     }
 
     bool next_line();
-    Token* next_token();
-    RawToken next_raw_token();
+    ParseContext parse_current_line();
 
     AllowInternalTestFor(Tokenizer);
 
    private:
     std::string __read_next_line();
     std::string __format(std::string line);
-    void __tokenize(std::string line);
     std::string __file_content;
     int __current_line_number;
     int __current_index;
     std::vector<Formatter> __line_formatters;
-    std::queue<Token*> __tokens;
-    std::queue<RawToken> __raw_tokens;
+    TokenParser __parser;
+    std::string __line;
+    ParseContext __parse(std::string line);
 };
-
-std::vector<std::string> split_line_in_spaces_and_tabs(const std::string& line);
 
 }  // namespace basilar::tokens

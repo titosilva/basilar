@@ -39,24 +39,6 @@ DefineTestSuiteFor(Tokenizer)
         auto r = tokenizer.__format("  \tHello \t\t    World    \t!   ");
         ASSERT_EQ(r, "hello world !");
     }
-    
-    DefineTest(SplitLine__Should__SplitStringBySpaces__WhenOneSpace) {
-        auto tokens = split_line_in_spaces_and_tabs("Hello World");
-        ASSERT_EQ(tokens.size(), 2);
-        ASSERT_EQ(tokens[0], "Hello");
-        ASSERT_EQ(tokens[1], "World");
-    }
-
-    DefineTest(SplitLine__Should__SplitStringBySpacesAndTabs__WhenSpacesAndTabs) {
-        auto tokens = split_line_in_spaces_and_tabs("1\t2\t3 4\t5 6");
-        ASSERT_EQ(tokens.size(), 6);
-        ASSERT_EQ(tokens[0], "1");
-        ASSERT_EQ(tokens[1], "2");
-        ASSERT_EQ(tokens[2], "3");
-        ASSERT_EQ(tokens[3], "4");
-        ASSERT_EQ(tokens[4], "5");
-        ASSERT_EQ(tokens[5], "6");
-    }
 
     DefineTest(ReadNextLine__Should__ReturnLine) {
         auto tokenizer = Tokenizer("Hello\nWorld");
@@ -101,59 +83,17 @@ DefineTestSuiteFor(Tokenizer)
         ASSERT_EQ(r, "\0");
     }
 
-    DefineTest(NextToken__Should__RetrieveTokenInFirstLine) {
-        auto tokenizer = Tokenizer("rot1:\tjmp a1\n\tjmp a3");
-        tokenizer.with_common_formatters();
+    DefineTest(ParseCurrentLine__Should__ParseLineWithProvidedParser) {
+        auto tokenizer = Tokenizer("\t  Hello\t\t\nWorld");
+        tokenizer.add_line_formatter(ToLower);
+        tokenizer.add_line_formatter(Trim);
+        tokenizer.with_parser(Literal("hello"));
 
-        ASSERT_TRUE(tokenizer.next_line());
-        auto token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "rot1:");
+        tokenizer.next_line();
 
-        token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "jmp");
-
-        token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "a1");
-    }
-
-    DefineTest(NextToken__Should__RetrieveTokenInNextLine) {
-        auto tokenizer = Tokenizer("rot1\t\t   \t:\tjmp a1\n\t\tjmp\t\ta3    ");
-        tokenizer.with_common_formatters();
-
-        ASSERT_TRUE(tokenizer.next_line());
-        ASSERT_TRUE(tokenizer.next_line());
-
-        auto token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "jmp");
-
-        token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "a3");
-
-        ASSERT_FALSE(tokenizer.next_line());
-    }
-
-    DefineTest(NextToken__Should__RetrieveTokenInNextLine__WithComments__AndBlankLines) {
-        auto tokenizer = Tokenizer("rot1\t\t  \t\t:\tjmp a1; this is a comment\n\t; Commented\t\t\n\n\n\t\t\tjmp\t\ta3  \t  \n\n");
-        tokenizer.with_common_formatters();
-
-        ASSERT_TRUE(tokenizer.next_line());
-        auto token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "rot1:");
-
-        token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "jmp");
-
-        token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "a1");
-
-        ASSERT_TRUE(tokenizer.next_line());
-        token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "jmp");
-
-        token = tokenizer.next_raw_token();
-        ASSERT_EQ(token.value, "a3");
-
-        ASSERT_FALSE(tokenizer.next_line());
+        auto r = tokenizer.parse_current_line();
+        ASSERT_EQ(r.get_tokens().size(), 1);
+        ASSERT_EQ(r.get_tokens()[0].value, "hello");
     }
 EndTestSuite
 
@@ -161,11 +101,7 @@ RunTest(Tokenizer, Preprocess__Should__LowerLine__WhenToLowerFormatter)
 RunTest(Tokenizer, Preprocess__Should__TrimLine__WhenTrimFormatter)
 RunTest(Tokenizer, Preprocess__Should__UnifyWhitespace__WhenUnifyWhitespaceFormatter)
 RunTest(Tokenizer, Preprocess__Should__ApplyAllFormatters__WhenMultipleFormatters)
-RunTest(Tokenizer, SplitLine__Should__SplitStringBySpaces__WhenOneSpace)
-RunTest(Tokenizer, SplitLine__Should__SplitStringBySpacesAndTabs__WhenSpacesAndTabs)
 RunTest(Tokenizer, ReadNextLine__Should__ReturnLine)
 RunTest(Tokenizer, ReadNextLine__Should__ReturnTrimmedLine)
 RunTest(Tokenizer, ReadNextLine__Should__PreprocessedReturnLine)
-RunTest(Tokenizer, NextToken__Should__RetrieveTokenInFirstLine)
-RunTest(Tokenizer, NextToken__Should__RetrieveTokenInNextLine)
-RunTest(Tokenizer, NextToken__Should__RetrieveTokenInNextLine__WithComments__AndBlankLines)
+RunTest(Tokenizer, ParseCurrentLine__Should__ParseLineWithProvidedParser)

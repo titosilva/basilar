@@ -15,6 +15,7 @@ typedef function<ParseResult(ParseContext)> TokenParserFunction;
 class TokenParser {
 public:
     TokenParser(TokenParserFunction parse_token) : __parse_token(parse_token) {}
+    TokenParser() : __parse_token([](ParseContext ctx) { return ctx; }) {}
     ParseResult parse(ParseContext context) const;
     ParseResult parse(string input) const;
 

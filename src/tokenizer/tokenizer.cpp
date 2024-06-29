@@ -9,6 +9,10 @@ void Tokenizer::add_line_formatter(Formatter formatter) {
     this->__line_formatters.push_back(formatter);
 }
 
+void Tokenizer::with_parser(TokenParser parser) {
+    this->__parser = parser;
+}
+
 string Tokenizer::__format(string line) {
     auto cp = string(line);
     for (auto formatter : this->__line_formatters) {
@@ -25,7 +29,7 @@ bool Tokenizer::next_line() {
         return false;
     }
 
-    this->__tokenize(line);
+    this->__line = line;
     return true;
 }
 
@@ -52,51 +56,18 @@ std::string Tokenizer::__read_next_line() {
     return line;
 }
 
-void Tokenizer::__tokenize(std::string line) {
-    this->__tokens = queue<Token*>();
-    this->__raw_tokens = queue<RawToken>();
-
-    auto pieces = split_line_in_spaces_and_tabs(line);
-    for (int i = 0; i < pieces.size(); i++) {
-        this->__raw_tokens.push(RawToken {
-            .source_line_number = this->__current_line_number,
-            .source_line = line,
-            .source_column_number = i,
-            .value = pieces[i],
-        });
-    }
+ParseContext Tokenizer::parse_current_line() {
+    return this->__parse(this->__line);
 }
 
-Token* Tokenizer::next_token() {
-    auto token = this->__tokens.front();
-    this->__tokens.pop();
-    return token;
-}
+ParseContext Tokenizer::__parse(std::string line) {
+    auto ctx = this->__parser.parse(line);
 
-RawToken Tokenizer::next_raw_token() {
-    auto raw_token = this->__raw_tokens.front();
-    this->__raw_tokens.pop();
-    return raw_token;
-}
-
-vector<string> split_line_in_spaces_and_tabs(const string& line) {
-    auto cp = string(line);
-    // Splits token
-    vector<string> tokens = {};
-
-    int i = 0;
-    while (i < cp.size()) {
-        auto match = cp.find_first_of(" \t", i);
-
-        if (match == string::npos) {
-            match = cp.size();
-        }
-
-        tokens.push_back(cp.substr(i, match - i));
-        i = match + 1;
+    if (!ctx.has_value()) {
+        throw new runtime_error("Failed to parse line");
     }
 
-    return tokens;
+    return ctx.value();
 }
 
 } // namespace basilar::tokenizer
