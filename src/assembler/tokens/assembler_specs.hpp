@@ -11,19 +11,25 @@ using namespace basilar::tokens::parser;
 
 #define DefParser(name, parser) Def name As OptSpace Then parser Then OptSpace
 #define DefType(type, parser) Def type As OptSpace Then JoinWithType(parser, #type) Then OptSpace
+#define DefLine(name, parser) Def name As OptSpace Then parser Then OptSpace >> Require(Close, "Expected end of line")
 
 namespace basilar::tokens {
     Def Space As Hidden(Whitespace);
     Def OptSpace As Optional(Space);
     Def Close As Hidden(End);
     Def SpaceOrClose As Space | Close;
-    Def EndArgs As OptSpace >> Require(Close, "Expected end of arguments");
+    Def EndLine As OptSpace >> Require(Close, "Expected end of line");
+
+    const ParserMod<string> Args = [](TokenParser parser, string error) -> TokenParser {
+        return Space >> Require(parser, error) >> EndLine
+        Else Forbid(OptSpace >> Close, error) Then Fail;
+    };
 
     DefType(Integer, (HexNumber | Number) >> SpaceOrClose)
     Else Forbid(Literal("0x") << NotWhitespace, "Invalid hex number format") Then Fail
     EndDef
 
-    DefParser(Label, RegexParser(R"([a-zA-Z_][a-zA-Z0-9_]*)", "label"))
+    DefType(Label, RegexParser(R"([a-zA-Z_][a-zA-Z0-9_]*)"))
     EndDef
 
     DefType(LabelDef, Label >> ":")
@@ -31,19 +37,18 @@ namespace basilar::tokens {
     Else Forbid(RegexParser(R"(.*:)"), "Malformed label definition") Then Fail
     EndDef
 
-    Def EquDirectiveLine As OptSpace
-        >> LabelDef >> OptSpace
+    DefLine(EquDirectiveLine, 
+        LabelDef 
         >> "equ"
-        >> Require(Space >> Integer, "Expected number after equ directive")
-    Then EndArgs
+        >> Args(Integer, "Expected number after equ directive")
+    )
     Else Forbid(OptSpace >> "equ", "Expected label before equ directive") Then Fail
     EndDef
 
-    Def IfDirectiveLine As OptSpace
-        >> Optional(LabelDef) >> OptSpace
+    DefLine(IfDirectiveLine, 
+        Optional(LabelDef) 
         >> "if"
-        >> Require(Space >> (Label | Integer), "Expected label or number after if directive")
-    Then EndArgs
+        >> Args(Label | Integer, "Expected label or number after if directive"))
     EndDef
 
     Def PreprocessingLine As EquDirectiveLine | IfDirectiveLine;
