@@ -91,4 +91,23 @@ const ParserMod<int> Repeat = [](TokenParser parser, int count) -> TokenParser {
     });
 };
 
+const ParserMod<string> JoinWithType = [](TokenParser parser, string type) -> TokenParser {
+    return TokenParser([=](ParseContext ctx) -> ParseResult {
+        ParseResult result = parser.parse(ctx.reset_tokens());
+
+        if (!result.has_value()) {
+            return fail_parse();
+        }
+
+        auto tokens = result.value().get_tokens();
+        string value = "";
+
+        for (auto token : tokens) {
+            value += token.value;
+        }
+
+        return ctx.add_token(type, value).with_remaining_input_from(result.value());
+    });
+};
+
 } // namespace basilar::tokens::parser_modifiers

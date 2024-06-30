@@ -4,18 +4,7 @@
 using namespace std;
 using namespace basilar::tokens::parser;
 
-DefineGlobalTestSuiteFor(UtilityParsers)
-    DefineGlobalTest(JoinWithType__ShouldJoinTokensWithType) {
-        auto parser = Whitespace >> Number >> Whitespace >> JoinAs("number_with_spaces");
-        auto result = parser.parse("    123\t    ");
-
-        ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "number_with_spaces");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "    123\t    ");
-        ASSERT_EQ(result.value().get_remaining_input(), "");
-    }
-
+DefineGlobalTestSuiteFor(UtilityParsers)    
     DefineGlobalTest(Literal__ShouldParseToken__IfExactMatch) {
         auto parser = Literal("123");
         auto result = parser.parse("123abc");
@@ -51,10 +40,21 @@ DefineGlobalTestSuiteFor(UtilityParsers)
 
         ASSERT_FALSE(result.has_value());
     }
+
+    DefineGlobalTest(NotWhitespace__ShouldParseToken__IfNotEmpty) {
+        auto parser = NotWhitespace;
+        auto result = parser.parse("abc 123");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 1);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "notwhitespace");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "abc");
+        ASSERT_EQ(result.value().get_remaining_input(), " 123");
+    }
 EndGlobalTestSuite
 
-RunGlobalTest(UtilityParsers, JoinWithType__ShouldJoinTokensWithType)
 RunGlobalTest(UtilityParsers, Literal__ShouldParseToken__IfExactMatch)
 RunGlobalTest(UtilityParsers, Literal__ShouldNotParseToken__IfExactMatchFails)
 RunGlobalTest(UtilityParsers, End__ShouldParseToken__IfEndOfInput)
 RunGlobalTest(UtilityParsers, End__ShouldNotParseToken__IfInputNotEmpty)
+RunGlobalTest(UtilityParsers, NotWhitespace__ShouldParseToken__IfNotEmpty)

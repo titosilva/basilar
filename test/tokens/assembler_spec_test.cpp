@@ -40,7 +40,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
         ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
         ASSERT_EQ(result.value().get_remaining_input(), "and a b");
     }
@@ -51,7 +51,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
         ASSERT_EQ(result.value().get_tokens()[0].value, "label_:");
         ASSERT_EQ(result.value().get_remaining_input(), "and a b");
     }
@@ -62,7 +62,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
         ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
         ASSERT_EQ(result.value().get_remaining_input(), "and a b");
     }
@@ -87,12 +87,15 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         auto result = parser.parse("label: equ 123   ");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 3);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "label");
+        ASSERT_EQ(result.value().get_tokens().size(), 3) 
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
         ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
         ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
         ASSERT_EQ(result.value().get_tokens()[1].value, "equ");
-        ASSERT_EQ(result.value().get_tokens()[2].type, "number");
+        ASSERT_EQ(result.value().get_tokens()[2].type, "integer");
         ASSERT_EQ(result.value().get_tokens()[2].value, "123");
         ASSERT_EQ(result.value().get_remaining_input(), "");
     }
@@ -111,6 +114,48 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         auto parser = EquDirectiveLine;
         ASSERT_THROW(parser.parse("label: equ 123 456"), ParsingException);
     }
+
+    DefineGlobalTest(EquDirective__ShouldParse__WhenArgIsHexadecimal) {
+        auto parser = EquDirectiveLine;
+        auto result = parser.parse("label: equ 0x123   ");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 3);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "equ");
+        ASSERT_EQ(result.value().get_tokens()[2].type, "integer");
+        ASSERT_EQ(result.value().get_tokens()[2].value, "0x123");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+    }
+
+    DefineGlobalTest(Integer__ShouldParse__WhenNumberIsProvided) {
+        auto parser = Integer;
+        auto result = parser.parse("123   ");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 1);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "integer");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "123");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+    }
+
+    DefineGlobalTest(Integer__ShouldParse__WhenHexadecimalNumberIsProvided) {
+        auto parser = Integer;
+        auto result = parser.parse("0x123   ");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 1);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "integer");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "0x123");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+    }
+
+    DefineGlobalTest(Integer__ShouldThrow__WhenInvalidHexadecimalNumberIsProvided) {
+        auto parser = Integer;
+        ASSERT_THROW(parser.parse("0x123g"), ParsingException);
+    }
 EndGlobalTestSuite
 
 RunGlobalTest(AssemblerSpecs, Label__ShouldParseSequencesWithLettersNumbersAndUnderscores)
@@ -126,4 +171,7 @@ RunGlobalTest(AssemblerSpecs, EquDirective__ShouldParse__WhenNumberIsProvided)
 RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenNumberIsNotProvided)
 RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenLabelIsNotProvided)
 RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenTooManyArguments)
-
+RunGlobalTest(AssemblerSpecs, EquDirective__ShouldParse__WhenArgIsHexadecimal)
+RunGlobalTest(AssemblerSpecs, Integer__ShouldParse__WhenNumberIsProvided)
+RunGlobalTest(AssemblerSpecs, Integer__ShouldParse__WhenHexadecimalNumberIsProvided)
+RunGlobalTest(AssemblerSpecs, Integer__ShouldThrow__WhenInvalidHexadecimalNumberIsProvided)

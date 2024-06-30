@@ -9,33 +9,40 @@ using namespace basilar::tokens::parser;
 #define EndDef ;
 #define Then >>
 
+#define DefParser(name, parser) Def name As OptSpace Then parser Then OptSpace
+#define DefType(type, parser) Def type As OptSpace Then JoinWithType(parser, #type) Then OptSpace
+
 namespace basilar::tokens {
-    Def OptSpace As Hidden(Optional(Whitespace));
-    Def Space As Hidden(Require(Whitespace, "Expected empty space"));
-    Def Close As OptSpace >> Hidden(End);
-    Def EndArgs As Require(Close, "Expected end of arguments");
+    Def Space As Hidden(Whitespace);
+    Def OptSpace As Optional(Space);
+    Def Close As Hidden(End);
+    Def SpaceOrClose As Space | Close;
+    Def EndArgs As OptSpace >> Require(Close, "Expected end of arguments");
 
-    Def Label As OptSpace >> RegexParser(R"([a-zA-Z_][a-zA-Z0-9_]*)", "label") >> OptSpace;
+    DefType(Integer, (HexNumber | Number) >> SpaceOrClose)
+    Else Forbid(Literal("0x") << NotWhitespace, "Invalid hex number format") Then Fail
+    EndDef
 
-    Def LabelDef As OptSpace 
-        >> Label >> OptSpace >> ":" >> OptSpace
-        >> Forbid(RegexParser(R"(.*:)"), "Double label definition")
-    Then JoinAs("label")
+    DefParser(Label, RegexParser(R"([a-zA-Z_][a-zA-Z0-9_]*)", "label"))
+    EndDef
+
+    DefType(LabelDef, Label >> ":")
+    Then Forbid(RegexParser(R"(.*:)"), "Double label definition")
     Else Forbid(RegexParser(R"(.*:)"), "Malformed label definition") Then Fail
     EndDef
 
     Def EquDirectiveLine As OptSpace
         >> LabelDef >> OptSpace
-        >> "equ" >> Space
-        >> Require(Number, "Expected number after equ directive")
+        >> "equ"
+        >> Require(Space >> Integer, "Expected number after equ directive")
     Then EndArgs
     Else Forbid(OptSpace >> "equ", "Expected label before equ directive") Then Fail
     EndDef
 
     Def IfDirectiveLine As OptSpace
         >> Optional(LabelDef) >> OptSpace
-        >> "if" >> Space
-        >> Require(Label | Number, "Expected label or number after if directive")
+        >> "if"
+        >> Require(Space >> (Label | Integer), "Expected label or number after if directive")
     Then EndArgs
     EndDef
 

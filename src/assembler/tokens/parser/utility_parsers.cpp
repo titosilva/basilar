@@ -12,17 +12,4 @@ TokenParser Literal(string value) {
     });
 }
 
-TokenParser JoinAs(string type) {
-    return TokenParser([type](ParseContext ctx) -> ParseResult {
-        auto tokens = ctx.get_tokens();
-        string value = "";
-
-        for (auto token : tokens) {
-            value += token.value;
-        }
-
-        return ctx.reset_tokens().add_token(type, value);
-    });
-}
-
 } // namespace basilar::tokens::parser

@@ -95,6 +95,17 @@ DefineGlobalTestSuiteFor(ParserMods)
         ASSERT_EQ(result.value().get_tokens().size(), 0);
         ASSERT_EQ(result.value().get_remaining_input(), "abc");
     }
+
+    DefineGlobalTest(JoinWithType__ShouldJoinTokensWithType) {
+        auto parser = JoinWithType(Whitespace >> Number >> Whitespace, "number_with_spaces");
+        auto result = parser.parse("    123\t    ");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 1);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "number_with_spaces");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "    123\t    ");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+    }
 EndTestSuite
 
 RunGlobalTest(ParserMods, Optional__ShouldGetTokens__IfParserMatches)
@@ -106,3 +117,4 @@ RunGlobalTest(ParserMods, Required__ShouldGetTokens__IfParserMatches)
 RunGlobalTest(ParserMods, Repeat__ShouldGetTokens__IfParserMatches)
 RunGlobalTest(ParserMods, FailIf__ShouldThrowException__IfParserMatches)
 RunGlobalTest(ParserMods, FailIf__ShouldLetRemainingInput__IfParserDoesNotMatch)
+RunGlobalTest(ParserMods, JoinWithType__ShouldJoinTokensWithType)
