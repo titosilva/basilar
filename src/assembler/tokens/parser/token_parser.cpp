@@ -3,7 +3,7 @@
 
 using namespace std;
 
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
 
 ParseResult TokenParser::parse(ParseContext ctx) const {
     return __parse_token(ctx);
@@ -88,4 +88,4 @@ TokenParser operator+(string lhs, TokenParser rhs) {
     return Literal(lhs) + rhs;
 }
 
-} // namespace basilar::tokens::parser
+} // namespace basilar::assembler::tokens::parser

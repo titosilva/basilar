@@ -9,10 +9,10 @@
 
 using namespace std;
 
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
 
 typedef optional<ParseContext> ParseResult;
 ParseResult fail_parse();
 
-} // namespace basilar::tokens::parser
+} // namespace basilar::assembler::tokens::parser
 

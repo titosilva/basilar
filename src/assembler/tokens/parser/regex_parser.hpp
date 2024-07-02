@@ -4,7 +4,7 @@
 
 #include <regex>
 
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
 
 class RegexParser : public TokenParser {
 public:
@@ -25,4 +25,4 @@ public:
     }) {}
 };
 
-} // namespace basilar::tokens::parser
+} // namespace basilar::assembler::tokens::parser

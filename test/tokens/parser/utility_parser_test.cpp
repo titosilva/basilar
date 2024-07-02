@@ -2,7 +2,7 @@
 #include "../../test_suite.hpp"
 
 using namespace std;
-using namespace basilar::tokens::parser;
+using namespace basilar::assembler::tokens::parser;
 
 DefineGlobalTestSuiteFor(UtilityParsers)    
     DefineGlobalTest(Literal__ShouldParseToken__IfExactMatch) {

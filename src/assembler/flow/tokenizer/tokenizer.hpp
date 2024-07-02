@@ -7,18 +7,20 @@
 #include <string>
 #include <vector>
 
-#include "../../friend_test.hpp"
+#include "../../../friend_test.hpp"
+#include "../../tokens/parser/parser.hpp"
+#include "../assembler_steps.hpp"
 #include "formatter.hpp"
-#include "../tokens/parser/parser.hpp"
 
-using namespace basilar::tokens::parser;
+using namespace basilar::assembler::tokens::parser;
+using namespace basilar::assembler::flow;
 
 namespace basilar::tokenizer {
 
-class Tokenizer {
-   public:
-
-    Tokenizer(std::string file_content) : __file_content(file_content), __current_line_number(0), __current_index(0) { }
+class Tokenizer : public AssemblerSource {
+public:
+    static Tokenizer* from_file(std::string file_path);
+    Tokenizer(std::string file_content) : __file_content(file_content), __current_line_number(0), __current_index(0) {}
 
     void add_line_formatter(Formatter formatter);
     void with_parser(TokenParser parser);
@@ -37,7 +39,7 @@ class Tokenizer {
 
     AllowInternalTestFor(Tokenizer);
 
-   private:
+private:
     std::string __read_next_line();
     std::string __format(std::string line);
     std::string __file_content;
@@ -49,4 +51,4 @@ class Tokenizer {
     ParseContext __parse(std::string line);
 };
 
-}  // namespace basilar::tokens
+}  // namespace basilar::tokenizer

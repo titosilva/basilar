@@ -2,7 +2,7 @@
 
 #include "parser/parser.hpp"
 
-using namespace basilar::tokens::parser;
+using namespace basilar::assembler::tokens::parser;
 #define Def static TokenParser
 #define As =
 #define Else |

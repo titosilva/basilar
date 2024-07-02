@@ -1,5 +1,7 @@
 #include "../test_suite.hpp"
-#include "../../src/assembler/tokenizer/tokenizer.hpp"
+#include "../../src/assembler/flow/tokenizer/tokenizer.hpp"
+
+#include <filesystem>
 
 using namespace std;
 using namespace basilar::tokenizer;
@@ -95,6 +97,20 @@ DefineTestSuiteFor(Tokenizer)
         ASSERT_EQ(r.get_tokens().size(), 1);
         ASSERT_EQ(r.get_tokens()[0].value, "hello");
     }
+
+    DefineTest(FromFile__Should__ReturnTokenizerWithFileContent) {
+        auto test_file = filesystem::path(__FILE__).replace_filename("test.txt");
+        auto tokenizer = *Tokenizer::from_file(test_file);
+        tokenizer.add_line_formatter(ToLower);
+        tokenizer.add_line_formatter(Trim);
+        tokenizer.with_parser(Literal("hello"));
+
+        ASSERT_TRUE(tokenizer.next_line()) << "Content: " << tokenizer.__file_content;
+        auto r = tokenizer.parse_current_line();
+
+        ASSERT_EQ(r.get_tokens().size(), 1);
+        ASSERT_EQ(r.get_tokens()[0].value, "hello");
+    }
 EndTestSuite
 
 RunTest(Tokenizer, Preprocess__Should__LowerLine__WhenToLowerFormatter)
@@ -105,3 +121,4 @@ RunTest(Tokenizer, ReadNextLine__Should__ReturnLine)
 RunTest(Tokenizer, ReadNextLine__Should__ReturnTrimmedLine)
 RunTest(Tokenizer, ReadNextLine__Should__PreprocessedReturnLine)
 RunTest(Tokenizer, ParseCurrentLine__Should__ParseLineWithProvidedParser)
+RunTest(Tokenizer, FromFile__Should__ReturnTokenizerWithFileContent)

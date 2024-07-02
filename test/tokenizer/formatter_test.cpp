@@ -1,5 +1,5 @@
 #include "../test_suite.hpp"
-#include "../../src/assembler/tokenizer/formatter.hpp"
+#include "../../src/assembler/flow/tokenizer/formatter.hpp"
 
 #include <string>
 

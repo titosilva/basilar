@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
 
 typedef function<ParseResult(ParseContext)> TokenParserFunction;
 
@@ -46,4 +46,4 @@ TokenParser operator+(TokenParser lhs, TokenParser rhs);
 TokenParser operator+(TokenParser lhs, string rhs);
 TokenParser operator+(string lhs, TokenParser rhs);
 
-} // namespace basilar::tokens::parser
+} // namespace basilar::assembler::tokens::parser

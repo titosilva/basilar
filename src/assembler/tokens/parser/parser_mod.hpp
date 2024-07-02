@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
 
 template <typename... ParamTypes>
 using ParserMod = function<TokenParser(TokenParser, ParamTypes...)>;
@@ -110,4 +110,4 @@ const ParserMod<string> JoinWithType = [](TokenParser parser, string type) -> To
     });
 };
 
-} // namespace basilar::tokens::parser_modifiers
+} // namespace basilar::assembler::tokens::parser_modifiers

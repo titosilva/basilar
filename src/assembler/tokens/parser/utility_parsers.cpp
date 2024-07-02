@@ -1,6 +1,6 @@
 #include "utility_parsers.hpp"
 
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
 
 TokenParser Literal(string value) {
     return TokenParser([value](ParseContext ctx) -> ParseResult {
@@ -12,4 +12,4 @@ TokenParser Literal(string value) {
     });
 }
 
-} // namespace basilar::tokens::parser
+} // namespace basilar::assembler::tokens::parser

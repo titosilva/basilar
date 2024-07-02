@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
 
 struct ParseContext {
 public:
@@ -58,5 +58,5 @@ private:
     string __remaining_input;
 };
 
-} // namespace basilar::tokens::parser
+} // namespace basilar::assembler::tokens::parser
 

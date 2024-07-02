@@ -1,9 +1,27 @@
 #include <string>
+#include <fstream>
 
 #include "tokenizer.hpp"
 
 using namespace std;
 namespace basilar::tokenizer {
+
+Tokenizer* Tokenizer::from_file(string file_path) {
+    auto file = ifstream(file_path);
+
+    if (!file.good()) {
+        throw runtime_error("Failed to open file");
+    }
+    
+    string content;
+    while (file.good()) {
+        string line;
+        getline(file, line);
+        content += line + "\n";
+    }
+
+    return new Tokenizer(content);
+}
 
 void Tokenizer::add_line_formatter(Formatter formatter) {
     this->__line_formatters.push_back(formatter);

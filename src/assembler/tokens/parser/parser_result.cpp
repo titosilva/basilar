@@ -1,10 +1,10 @@
 #include "./parser_result.hpp"
 
 using namespace std;
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
 
 ParseResult fail_parse() {
     return nullopt;
 }
 
-} // namespace basilar::tokens::parser
+} // namespace basilar::assembler::tokens::parser

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
 
 class Token {
 public:
@@ -22,4 +22,4 @@ public:
     string value;
 };
 
-} // namespace basilar::tokens::parser
+} // namespace basilar::assembler::tokens::parser

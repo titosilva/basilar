@@ -3,7 +3,7 @@
 #include "token_parser.hpp"
 #include "regex_parser.hpp"
 
-namespace basilar::tokens::parser {
+namespace basilar::assembler::tokens::parser {
     TokenParser Literal(string value);
 
     const TokenParser Fail = TokenParser([](ParseContext ctx) -> ParseResult {
@@ -24,4 +24,4 @@ namespace basilar::tokens::parser {
 
         return fail_parse();
     });
-} // namespace basilar::tokens::parser
+} // namespace basilar::assembler::tokens::parser

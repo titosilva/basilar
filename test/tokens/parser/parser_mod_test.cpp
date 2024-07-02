@@ -1,7 +1,7 @@
 #include "../../../src/assembler/tokens/parser/parser.hpp"
 #include "../../test_suite.hpp"
 
-using namespace basilar::tokens::parser;
+using namespace basilar::assembler::tokens::parser;
 
 DefineGlobalTestSuiteFor(ParserMods)
 

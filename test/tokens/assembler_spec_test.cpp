@@ -3,7 +3,7 @@
 
 using namespace std;
 using namespace basilar::tokens;
-using namespace basilar::tokens::parser;
+using namespace basilar::assembler::tokens::parser;
 
 DefineGlobalTestSuiteFor(AssemblerSpecs)
     DefineGlobalTest(Label__ShouldParseSequencesWithLettersNumbersAndUnderscores) {
