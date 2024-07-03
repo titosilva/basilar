@@ -9,7 +9,7 @@ AssemblerFlow AssemblerFlow::add_step(AssemblerStep* step) {
 
 void AssemblerFlow::run() {
     while (this->__source->next_line()) {
-        auto ctx = this->__source->parse_current_line();
+        auto ctx = this->__source->read_current_line();
         
         for (auto step : this->__steps) {
             auto result = step->run(ctx, this->__source);

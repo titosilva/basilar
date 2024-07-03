@@ -12,4 +12,10 @@ TokenParser Literal(string value) {
     });
 }
 
+TokenParser Note(string key, string value) {
+    return TokenParser([key, value](ParseContext ctx) -> ParseResult {
+        return ctx.add_annotation(key, value);
+    });
+}
+
 } // namespace basilar::assembler::tokens::parser

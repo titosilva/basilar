@@ -9,15 +9,15 @@ using namespace std;
 
 namespace basilar::assembler::flow {
 
-class AssemblerSource {
+class LineSource {
 public:
-    virtual ParseContext parse_current_line() = 0;
+    virtual ParseContext read_current_line() = 0;
     virtual bool next_line() = 0;
 };
 
 class AssemblerStep {
 public:
-    virtual optional<ParseContext> run(ParseContext ctx, AssemblerSource* source) const = 0;
+    virtual optional<ParseContext> run(ParseContext ctx, LineSource* source) = 0;
 };
 
 } // namespace basilar::assembler::flow

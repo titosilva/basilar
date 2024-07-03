@@ -5,6 +5,7 @@
 
 namespace basilar::assembler::tokens::parser {
     TokenParser Literal(string value);
+    TokenParser Note(string key, string value);
 
     const TokenParser Fail = TokenParser([](ParseContext ctx) -> ParseResult {
         return fail_parse();

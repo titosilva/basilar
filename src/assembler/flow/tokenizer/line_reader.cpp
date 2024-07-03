@@ -1,12 +1,12 @@
 #include <string>
 #include <fstream>
 
-#include "tokenizer.hpp"
+#include "line_reader.hpp"
 
 using namespace std;
 namespace basilar::tokenizer {
 
-Tokenizer* Tokenizer::from_file(string file_path) {
+LineReader* LineReader::from_file(string file_path) {
     auto file = ifstream(file_path);
 
     if (!file.good()) {
@@ -20,18 +20,14 @@ Tokenizer* Tokenizer::from_file(string file_path) {
         content += line + "\n";
     }
 
-    return new Tokenizer(content);
+    return new LineReader(content);
 }
 
-void Tokenizer::add_line_formatter(Formatter formatter) {
+void LineReader::add_line_formatter(Formatter formatter) {
     this->__line_formatters.push_back(formatter);
 }
 
-void Tokenizer::with_parser(TokenParser parser) {
-    this->__parser = parser;
-}
-
-string Tokenizer::__format(string line) {
+string LineReader::__format(string line) {
     auto cp = string(line);
     for (auto formatter : this->__line_formatters) {
         cp = formatter(cp);
@@ -40,7 +36,7 @@ string Tokenizer::__format(string line) {
     return cp;
 }
 
-bool Tokenizer::next_line() {
+bool LineReader::next_line() {
     auto line = this->__read_next_line();
 
     if (line.empty()) {
@@ -51,7 +47,7 @@ bool Tokenizer::next_line() {
     return true;
 }
 
-std::string Tokenizer::__read_next_line() {
+std::string LineReader::__read_next_line() {
     auto r = this->__file_content;
     if (this->__current_index >= r.size()) {
         return "\0";
@@ -74,18 +70,8 @@ std::string Tokenizer::__read_next_line() {
     return line;
 }
 
-ParseContext Tokenizer::parse_current_line() {
-    return this->__parse(this->__line);
-}
-
-ParseContext Tokenizer::__parse(std::string line) {
-    auto ctx = this->__parser.parse(line);
-
-    if (!ctx.has_value()) {
-        throw new runtime_error("Failed to parse line");
-    }
-
-    return ctx.value();
+ParseContext LineReader::read_current_line() {
+    return ParseContext(this->__line);
 }
 
 } // namespace basilar::tokenizer

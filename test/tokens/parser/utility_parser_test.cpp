@@ -51,6 +51,23 @@ DefineGlobalTestSuiteFor(UtilityParsers)
         ASSERT_EQ(result.value().get_tokens()[0].value, "abc");
         ASSERT_EQ(result.value().get_remaining_input(), " 123");
     }
+
+    DefineGlobalTest(Note__Should__AddAnnotation__WhenParseSucceeds) {
+        auto parser =  Literal("123") >> Note("key", "value");
+        auto result = parser.parse("123");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_annotations().size(), 1);
+        ASSERT_EQ(result.value().get_annotations()["key"], "value");
+        ASSERT_TRUE(result.value().has_annotation("key"));
+    }
+
+    DefineGlobalTest(Note__ShouldNot__AddAnnotation__WhenParseFails) {
+        auto parser =  Literal("123") >> Note("key", "value");
+        auto result = parser.parse("abc");
+
+        ASSERT_FALSE(result.has_value());
+    }
 EndGlobalTestSuite
 
 RunGlobalTest(UtilityParsers, Literal__ShouldParseToken__IfExactMatch)
@@ -58,3 +75,5 @@ RunGlobalTest(UtilityParsers, Literal__ShouldNotParseToken__IfExactMatchFails)
 RunGlobalTest(UtilityParsers, End__ShouldParseToken__IfEndOfInput)
 RunGlobalTest(UtilityParsers, End__ShouldNotParseToken__IfInputNotEmpty)
 RunGlobalTest(UtilityParsers, NotWhitespace__ShouldParseToken__IfNotEmpty)
+RunGlobalTest(UtilityParsers, Note__Should__AddAnnotation__WhenParseSucceeds)
+RunGlobalTest(UtilityParsers, Note__ShouldNot__AddAnnotation__WhenParseFails)

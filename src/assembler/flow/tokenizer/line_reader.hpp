@@ -17,13 +17,12 @@ using namespace basilar::assembler::flow;
 
 namespace basilar::tokenizer {
 
-class Tokenizer : public AssemblerSource {
+class LineReader : public LineSource {
 public:
-    static Tokenizer* from_file(std::string file_path);
-    Tokenizer(std::string file_content) : __file_content(file_content), __current_line_number(0), __current_index(0) {}
+    static LineReader* from_file(std::string file_path);
+    LineReader(std::string file_content) : __file_content(file_content), __current_line_number(0), __current_index(0) {}
 
     void add_line_formatter(Formatter formatter);
-    void with_parser(TokenParser parser);
 
     void with_common_formatters() {
         this->add_line_formatter(RemoveComments);
@@ -34,10 +33,10 @@ public:
         this->add_line_formatter(RemoveEspacesBeforeColon);
     }
 
-    bool next_line();
-    ParseContext parse_current_line();
+    bool next_line() override;
+    ParseContext read_current_line() override;
 
-    AllowInternalTestFor(Tokenizer);
+    AllowInternalTestFor(LineReader);
 
 private:
     std::string __read_next_line();
@@ -46,9 +45,7 @@ private:
     int __current_line_number;
     int __current_index;
     std::vector<Formatter> __line_formatters;
-    TokenParser __parser;
     std::string __line;
-    ParseContext __parse(std::string line);
 };
 
 }  // namespace basilar::tokenizer
