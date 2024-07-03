@@ -16,6 +16,17 @@ public:
         : __tokens(tokens), __remaining_input(remaining_input), __annotations(annotations) {}
 
     vector<Token> get_tokens() const { return vector<Token>(__tokens); }
+
+    optional<Token> get_token_with_type(string type) const {
+        for (auto token : get_tokens()) {
+            if (token.type == type) {
+                return token;
+            }
+        }
+
+        return nullopt;
+    }
+
     const string get_remaining_input() const { return string(__remaining_input); }
     map<string, string> get_annotations() const { return map<string, string>(__annotations); }
     bool has_annotation(string key) const { return __annotations.find(key) != __annotations.end(); }

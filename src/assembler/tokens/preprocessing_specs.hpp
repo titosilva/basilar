@@ -8,15 +8,14 @@ namespace basilar::tokens {
     DefLine(EquDirectiveLine, 
         LabelDef 
         >> "equ"
-        >> Args(Integer, "Expected number after equ directive")
-    )
+        >> Args(NotWhitespace, "Expected non-whitespace argument after equ directive")
+    ) Then Note("is_equ", "true")
     Else Forbid(OptSpace >> "equ", "Expected label before equ directive") Then Fail
     EndDef
 
     DefLine(IfDirectiveLine, 
-        Optional(LabelDef) 
-        >> "if"
-        >> Args(Label | Integer, "Expected label or number after if directive"))
+        "if" >> Args(Label | Integer, "Expected label or number after if directive")
+    ) Then Note("is_if", "true")
     EndDef
 
     Def PreprocessingParser As EquDirectiveLine | IfDirectiveLine;
