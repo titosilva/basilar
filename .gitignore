@@ -3,3 +3,4 @@ build
 build-test
 ligador
 montador
+*.out.asm

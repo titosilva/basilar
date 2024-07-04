@@ -42,8 +42,8 @@ private:
     std::string __read_next_line();
     std::string __format(std::string line);
     std::string __file_content;
-    int __current_line_number;
-    int __current_index;
+    unsigned long __current_line_number;
+    unsigned long __current_index;
     std::vector<Formatter> __line_formatters;
     std::string __line;
 };

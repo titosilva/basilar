@@ -2,7 +2,7 @@
 
 namespace basilar::assembler::flow {
 
-optional<ParseContext> ParserStep::run(ParseContext ctx, LineSource* source) {
+optional<ParseContext> ParserStep::run(ParseContext ctx, LineSource*) {
     auto r = this->__parser->parse(ctx);
 
     if (r.has_value()) {

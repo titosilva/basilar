@@ -30,7 +30,7 @@ optional<ParseContext> Preprocessor::run(ParseContext ctx, LineSource* source) {
     return __try_replace_tokens(ctx, source);
 }
 
-optional<ParseContext> Preprocessor::__handle_equ(ParseContext ctx, LineSource* source) {
+optional<ParseContext> Preprocessor::__handle_equ(ParseContext ctx, LineSource*) {
     auto labeldef = ctx.get_token_with_type(ParserTypeOf(LabelDef));
     auto value = ctx.get_token_with_type("notwhitespace");
 
@@ -49,7 +49,7 @@ optional<ParseContext> Preprocessor::__handle_if(ParseContext ctx, LineSource* s
 
     if (label_name.has_value()) {
         auto def = __definitions.find(label_name.value().value);
-        if (def = __definitions.end()) {
+        if (def == __definitions.end()) {
             throw runtime_error("Undefined label in conditional");
         }
 
@@ -72,13 +72,18 @@ optional<ParseContext> Preprocessor::__handle_if(ParseContext ctx, LineSource* s
     return ctx;
 }
 
-optional<ParseContext> Preprocessor::__try_replace_tokens(ParseContext ctx, LineSource* source) {
+optional<ParseContext> Preprocessor::__try_replace_tokens(ParseContext ctx, LineSource*) {
     string new_line;
     auto line = ctx.get_remaining_input();
 
     while (line.length() > 0) {
         auto next_space = line.find_first_of(" \t");
         auto token = line.substr(0, next_space);
+
+        if (next_space == string::npos) {
+            new_line += line;
+            break;
+        }
 
         if (token.length() == 0) {
             line = line.substr(next_space + 1);
@@ -95,6 +100,8 @@ optional<ParseContext> Preprocessor::__try_replace_tokens(ParseContext ctx, Line
         line = line.substr(next_space + 1);
         new_line += line.length() > 0 ? " " : "";
     }
+
+    return ctx.with_remaining_input(new_line);
 }
 
 }  // namespace basilar::assembler::flow

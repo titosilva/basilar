@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
+#include <filesystem>
 
 using namespace std;
 
@@ -45,3 +46,19 @@ public:
         std::cout << message << std::endl;
     }
 };
+
+class TestData {
+public:
+    static string get_data_file_path(string file_name) {
+        auto test_file = filesystem::path(__FILE__);
+        test_file = test_file.parent_path() / "data" / file_name;
+        return test_file.string();
+    }
+
+    static string get_data_file_content(string file_name) {
+        auto file_path = get_data_file_path(file_name);
+        ifstream file(file_path);
+        string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+        return content;
+    }
+}

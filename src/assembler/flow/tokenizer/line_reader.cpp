@@ -1,6 +1,9 @@
 #include <string>
 #include <fstream>
 
+// TODO: Remove this
+#include <iostream>
+
 #include "line_reader.hpp"
 
 using namespace std;
@@ -20,6 +23,7 @@ LineReader* LineReader::from_file(string file_path) {
         content += line + "\n";
     }
 
+    file.close();
     return new LineReader(content);
 }
 
@@ -64,6 +68,7 @@ std::string LineReader::__read_next_line() {
         this->__current_index = match + 1;
         this->__current_line_number++;
 
+        cout << "Line: " << line << endl;
         line = this->__format(line);
     } while (line.empty() && this->__current_index < r.size());
 
@@ -71,6 +76,8 @@ std::string LineReader::__read_next_line() {
 }
 
 ParseContext LineReader::read_current_line() {
+    // TODO: Remove this
+    cout << "Current line: " << this->__line << endl;
     return ParseContext(this->__line);
 }
 
