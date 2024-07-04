@@ -44,7 +44,9 @@ optional<ParseContext> Preprocessor::__handle_equ(ParseContext ctx, LineSource*)
         throw runtime_error("Expected label definition and value");
     }
 
-    __definitions[labeldef.value().value] = value.value().value;
+    auto label = StringUtils::replace(labeldef.value().value, ":", "");
+    label = StringUtils::lower(label);
+    __definitions[label] = value.value().value;
     return nullopt;
 }
 
@@ -54,7 +56,9 @@ optional<ParseContext> Preprocessor::__handle_if(ParseContext ctx, LineSource* s
     auto number = ctx.get_token_with_type(ParserTypeOf(Integer));
 
     if (label_name.has_value()) {
-        auto def = __definitions.find(label_name.value().value);
+        cout << "Label name: " << label_name.value().value << endl;
+        auto label = StringUtils::lower(label_name.value().value);
+        auto def = __definitions.find(label);
         if (def == __definitions.end()) {
             throw runtime_error("Undefined label in conditional");
         }
@@ -72,10 +76,9 @@ optional<ParseContext> Preprocessor::__handle_if(ParseContext ctx, LineSource* s
 
     if (conditional_value == 0) {
         source->next_line();
-        return nullopt;
     }
 
-    return ctx;
+    return nullopt;
 }
 
 optional<ParseContext> Preprocessor::__try_replace_tokens(ParseContext ctx, LineSource*) {
