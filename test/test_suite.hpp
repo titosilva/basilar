@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
+#include <fstream>
 #include <filesystem>
 
 using namespace std;
@@ -61,4 +62,4 @@ public:
         string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
         return content;
     }
-}
+};

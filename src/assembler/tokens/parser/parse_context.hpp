@@ -4,6 +4,9 @@
 #include "../../../friend_test.hpp"
 #include <vector>
 #include <map>
+#include "../../utils/string_utils.hpp"
+
+using namespace basilar::utils;
 
 using namespace std;
 
@@ -18,8 +21,10 @@ public:
     vector<Token> get_tokens() const { return vector<Token>(__tokens); }
 
     optional<Token> get_token_with_type(string type) const {
+        auto normalized = StringUtils::lower(type);
+
         for (auto token : get_tokens()) {
-            if (token.type == type) {
+            if (StringUtils::lower(token.type) == normalized) {
                 return token;
             }
         }

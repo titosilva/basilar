@@ -2,6 +2,10 @@
 #include "../../tokens/common_specs.hpp"
 #include "../../utils/string_utils.hpp"
 
+// TODO: Remove this
+#include <iostream>
+using namespace std;
+
 using namespace basilar::tokens;
 using namespace basilar::utils;
 
@@ -33,6 +37,8 @@ optional<ParseContext> Preprocessor::run(ParseContext ctx, LineSource* source) {
 optional<ParseContext> Preprocessor::__handle_equ(ParseContext ctx, LineSource*) {
     auto labeldef = ctx.get_token_with_type(ParserTypeOf(LabelDef));
     auto value = ctx.get_token_with_type("notwhitespace");
+
+    cout << "Label: " << labeldef.has_value() << " Value: " << value.has_value() << endl;
 
     if (!labeldef.has_value() || !value.has_value()) {
         throw runtime_error("Expected label definition and value");

@@ -10,6 +10,15 @@ namespace basilar::utils {
 
 class StringUtils {
 public:
+    static string lower(string str) {
+        string cp = string(str);
+        for (auto& c : cp) {
+            c = tolower(c);
+        }
+
+        return cp;
+    }
+
     static string replace(string str, string from, string to) {
         size_t start_pos = 0;
         auto cp = string(str);

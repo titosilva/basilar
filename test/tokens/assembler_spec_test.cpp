@@ -45,6 +45,17 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_EQ(result.value().get_remaining_input(), "and a b");
     }
 
+    DefineGlobalTest(LabelDef__ShouldParseLabelDefinition__2) {
+        auto parser = LabelDef;
+        auto result = parser.parse("test: equ a b");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 1);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "test:");
+        ASSERT_EQ(result.value().get_remaining_input(), "equ a b");
+    }
+
     DefineGlobalTest(LabelDef__ShouldParseLabelDefinition__WhenLabelContainsUnderscore) {
         auto parser = LabelDef;
         auto result = parser.parse("\t    \tlabel_: and a b");
@@ -95,7 +106,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
         ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
         ASSERT_EQ(result.value().get_tokens()[1].value, "equ");
-        ASSERT_EQ(result.value().get_tokens()[2].type, "integer");
+        ASSERT_EQ(result.value().get_tokens()[2].type, "notwhitespace");
         ASSERT_EQ(result.value().get_tokens()[2].value, "123");
         ASSERT_EQ(result.value().get_remaining_input(), "");
     }
@@ -125,8 +136,25 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
         ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
         ASSERT_EQ(result.value().get_tokens()[1].value, "equ");
-        ASSERT_EQ(result.value().get_tokens()[2].type, "integer");
+        ASSERT_EQ(result.value().get_tokens()[2].type, "notwhitespace");
         ASSERT_EQ(result.value().get_tokens()[2].value, "0x123");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+    }
+
+    DefineGlobalTest(EquDirective__ShouldParse__WhenArgIsLiteral) {
+        auto parser = EquDirectiveLine;
+        auto result = parser.parse("test: equ label2   ");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 3);
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef") 
+            << "Token type: " << result.value().get_tokens()[0].type
+            << "; Parser type: labeldef";
+        ASSERT_EQ(result.value().get_tokens()[0].value, "test:");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "equ");
+        ASSERT_EQ(result.value().get_tokens()[2].type, "notwhitespace");
+        ASSERT_EQ(result.value().get_tokens()[2].value, "label2");
         ASSERT_EQ(result.value().get_remaining_input(), "");
     }
 
@@ -162,6 +190,7 @@ RunGlobalTest(AssemblerSpecs, Label__ShouldParseSequencesWithLettersNumbersAndUn
 RunGlobalTest(AssemblerSpecs, Label__ShouldNotParseSequencesStartingWithNumber)
 RunGlobalTest(AssemblerSpecs, Label__ShouldNotParseSequencesWithInvalidChars)
 RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition)
+RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition__2)
 RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition__WhenLabelContainsUnderscore)
 RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition__WhenThereIsSpaceBeforeColon)
 RunGlobalTest(AssemblerSpecs, LabelDef__ShouldThrow__WhenLabelStartsWithNumber)
@@ -172,6 +201,7 @@ RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenNumberIsNotProvided
 RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenLabelIsNotProvided)
 RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenTooManyArguments)
 RunGlobalTest(AssemblerSpecs, EquDirective__ShouldParse__WhenArgIsHexadecimal)
+RunGlobalTest(AssemblerSpecs, EquDirective__ShouldParse__WhenArgIsLiteral)
 RunGlobalTest(AssemblerSpecs, Integer__ShouldParse__WhenNumberIsProvided)
 RunGlobalTest(AssemblerSpecs, Integer__ShouldParse__WhenHexadecimalNumberIsProvided)
 RunGlobalTest(AssemblerSpecs, Integer__ShouldThrow__WhenInvalidHexadecimalNumberIsProvided)
