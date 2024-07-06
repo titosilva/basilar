@@ -50,16 +50,22 @@ public:
 
 class TestData {
 public:
-    static string get_data_file_path(string file_name) {
-        auto test_file = filesystem::path(__FILE__);
-        test_file = test_file.parent_path() / "data" / file_name;
+    static string get_data_file_path(string base, string file_name) {
+        auto test_file = filesystem::absolute(base);
+        auto dir = test_file.remove_filename();
+        auto abs_dir = filesystem::absolute(dir);
+        
+        test_file = abs_dir / "data" / file_name;
         return test_file.string();
     }
 
-    static string get_data_file_content(string file_name) {
-        auto file_path = get_data_file_path(file_name);
+    static string get_data_file_content(string base, string file_name) {
+        auto file_path = get_data_file_path(base, file_name);
         ifstream file(file_path);
         string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
         return content;
     }
 };
+
+#define DATA_FILE_PATH(file_name) TestData::get_data_file_path(__FILE__, file_name)
+#define DATA_FILE_CONTENT(file_name) TestData::get_data_file_content(__FILE__, file_name)
