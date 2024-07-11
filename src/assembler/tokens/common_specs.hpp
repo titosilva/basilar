@@ -24,7 +24,7 @@ namespace basilar::tokens {
     DefType(Label, RegexParser(R"([a-zA-Z_][a-zA-Z0-9_]*)"))
     EndDef
 
-    DefType(LabelDef, Label >> ":")
+    DefType(LabelDef, Label >> ":") Then Note("has_label", "true")
     Then Forbid(RegexParser(R"(.*:)"), "Double label definition")
     Else Forbid(RegexParser(R"(.*:)"), "Malformed label definition") Then Fail
     EndDef

@@ -1,207 +1,387 @@
 #include "../test_suite.hpp"
-#include "../../src/assembler/tokens/preprocessing_specs.hpp"
+#include "../../src/assembler/tokens/assembler_specs.hpp"
 
 using namespace std;
 using namespace basilar::tokens;
 using namespace basilar::assembler::tokens::parser;
 
 DefineGlobalTestSuiteFor(AssemblerSpecs)
-    DefineGlobalTest(Label__ShouldParseSequencesWithLettersNumbersAndUnderscores) {
-        auto parser = Label;
-        auto result = parser.parse("label_123");
+    DefineGlobalTest(addCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = addCall;
+        auto result = parser.parse("add label");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "label");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "label_123");
-        ASSERT_EQ(result.value().get_remaining_input(), "");
-    }
-
-    DefineGlobalTest(Label__ShouldNotParseSequencesStartingWithNumber) {
-        auto parser = Label;
-        auto result = parser.parse("123label");
-
-        ASSERT_FALSE(result.has_value()) 
-            << "Label parsed result starting with number: " 
-            << result.value().get_tokens()[0].value 
-            << "; Remaining input: " << result.value().get_remaining_input();
-    }
-
-    DefineGlobalTest(Label__ShouldNotParseSequencesWithInvalidChars) {
-        auto parser = Label;
-        auto result = parser.parse("@label");
-
-        ASSERT_FALSE(result.has_value());
-    }
-
-    DefineGlobalTest(LabelDef__ShouldParseLabelDefinition) {
-        auto parser = LabelDef;
-        auto result = parser.parse("  label: and a b");
-
-        ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
-        ASSERT_EQ(result.value().get_remaining_input(), "and a b");
-    }
-
-    DefineGlobalTest(LabelDef__ShouldParseLabelDefinition__2) {
-        auto parser = LabelDef;
-        auto result = parser.parse("test: equ a b");
-
-        ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "test:");
-        ASSERT_EQ(result.value().get_remaining_input(), "equ a b");
-    }
-
-    DefineGlobalTest(LabelDef__ShouldParseLabelDefinition__WhenLabelContainsUnderscore) {
-        auto parser = LabelDef;
-        auto result = parser.parse("\t    \tlabel_: and a b");
-
-        ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "label_:");
-        ASSERT_EQ(result.value().get_remaining_input(), "and a b");
-    }
-
-    DefineGlobalTest(LabelDef__ShouldParseLabelDefinition__WhenThereIsSpaceBeforeColon) {
-        auto parser = LabelDef;
-        auto result = parser.parse("  label : and a b");
-
-        ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
-        ASSERT_EQ(result.value().get_remaining_input(), "and a b");
-    }
-
-    DefineGlobalTest(LabelDef__ShouldThrow__WhenLabelStartsWithNumber) {
-        auto parser = LabelDef;
-        ASSERT_THROW(parser.parse("123label: and a b"), ParsingException);
-    }
-
-    DefineGlobalTest(LabelDef__ShouldThrow__WhenLabelContainsInvalidChars) {
-        auto parser = LabelDef;
-        ASSERT_THROW(parser.parse("label@: and a b"), ParsingException);
-    }
-
-    DefineGlobalTest(LabelDef__ShouldThrow__WhenDoubleDefinitionOfLabel) {
-        auto parser = LabelDef;
-        ASSERT_THROW(parser.parse("label: and a b label: and a b"), ParsingException);
-    }
-
-    DefineGlobalTest(EquDirective__ShouldParse__WhenNumberIsProvided) {
-        auto parser = EquDirectiveLine;
-        auto result = parser.parse("label: equ 123   ");
-
-        ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 3) 
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
             << "Tokens size: " << result.value().get_tokens().size()
             << "; Remaining input: " << result.value().get_remaining_input()
             << "; Token 1: " << result.value().get_tokens()[0].value;
-        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
-        ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
-        ASSERT_EQ(result.value().get_tokens()[1].value, "equ");
-        ASSERT_EQ(result.value().get_tokens()[2].type, "notwhitespace");
-        ASSERT_EQ(result.value().get_tokens()[2].value, "123");
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "add");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
         ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "add");
     }
 
-    DefineGlobalTest(EquDirective__ShouldThrow__WhenNumberIsNotProvided) {
-        auto parser = EquDirectiveLine;
-        ASSERT_THROW(parser.parse("label: equ"), ParsingException);
+    DefineGlobalTest(addCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = addCall;
+        ASSERT_THROW(parser.parse("add"), ParsingException);
     }
 
-    DefineGlobalTest(EquDirective__ShouldThrow__WhenLabelIsNotProvided) {
-        auto parser = EquDirectiveLine;
-        ASSERT_THROW(parser.parse("equ 123"), ParsingException);
-    }
-
-    DefineGlobalTest(EquDirective__ShouldThrow__WhenTooManyArguments) {
-        auto parser = EquDirectiveLine;
-        ASSERT_THROW(parser.parse("label: equ 123 456"), ParsingException);
-    }
-
-    DefineGlobalTest(EquDirective__ShouldParse__WhenArgIsHexadecimal) {
-        auto parser = EquDirectiveLine;
-        auto result = parser.parse("label: equ 0x123   ");
+    DefineGlobalTest(subCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = subCall;
+        auto result = parser.parse("sub label");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 3);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
-        ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
-        ASSERT_EQ(result.value().get_tokens()[1].value, "equ");
-        ASSERT_EQ(result.value().get_tokens()[2].type, "notwhitespace");
-        ASSERT_EQ(result.value().get_tokens()[2].value, "0x123");
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "sub");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
         ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "sub");
     }
 
-    DefineGlobalTest(EquDirective__ShouldParse__WhenArgIsLiteral) {
-        auto parser = EquDirectiveLine;
-        auto result = parser.parse("test: equ label2   ");
+    DefineGlobalTest(subCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = subCall;
+        ASSERT_THROW(parser.parse("sub"), ParsingException);
+    }
+
+    DefineGlobalTest(mulCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = mulCall;
+        auto result = parser.parse("mul label");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 3);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef") 
-            << "Token type: " << result.value().get_tokens()[0].type
-            << "; Parser type: labeldef";
-        ASSERT_EQ(result.value().get_tokens()[0].value, "test:");
-        ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
-        ASSERT_EQ(result.value().get_tokens()[1].value, "equ");
-        ASSERT_EQ(result.value().get_tokens()[2].type, "notwhitespace");
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "mul");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "mul");
+    }
+
+    DefineGlobalTest(mulCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = mulCall;
+        ASSERT_THROW(parser.parse("mul"), ParsingException);
+    }
+
+    DefineGlobalTest(divCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = divCall;
+        auto result = parser.parse("div label");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "div");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "div");
+    }
+
+    DefineGlobalTest(divCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = divCall;
+        ASSERT_THROW(parser.parse("div"), ParsingException);
+    }
+
+    DefineGlobalTest(jmpCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = jmpCall;
+        auto result = parser.parse("jmp label");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "jmp");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "jmp");
+    }
+
+    DefineGlobalTest(jmpCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = jmpCall;
+        ASSERT_THROW(parser.parse("jmp"), ParsingException);
+    }
+
+    DefineGlobalTest(jmpnCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = jmpnCall;
+        auto result = parser.parse("jmpn label");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "jmpn");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "jmpn");
+    }
+
+    DefineGlobalTest(jmpnCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = jmpnCall;
+        ASSERT_THROW(parser.parse("jmpn"), ParsingException);
+    }
+
+    DefineGlobalTest(jmppCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = jmppCall;
+        auto result = parser.parse("jmpp label");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "jmpp");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "jmpp");
+    }
+
+    DefineGlobalTest(jmppCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = jmppCall;
+        ASSERT_THROW(parser.parse("jmpp"), ParsingException);
+    }
+
+    DefineGlobalTest(jmpzCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = jmpzCall;
+        auto result = parser.parse("jmpz label");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "jmpz");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "jmpz");
+    }
+
+    DefineGlobalTest(jmpzCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = jmpzCall;
+        ASSERT_THROW(parser.parse("jmpz"), ParsingException);
+    }
+
+    DefineGlobalTest(copyCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = copyCall;
+        auto result = parser.parse("copy label1,label2");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 3)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "copy");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label1");
+        ASSERT_EQ(result.value().get_tokens()[2].type, "label");
         ASSERT_EQ(result.value().get_tokens()[2].value, "label2");
         ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "copy");
     }
 
-    DefineGlobalTest(Integer__ShouldParse__WhenNumberIsProvided) {
-        auto parser = Integer;
-        auto result = parser.parse("123   ");
+    DefineGlobalTest(copyCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = copyCall;
+        ASSERT_THROW(parser.parse("copy"), ParsingException);
+    }
+
+    DefineGlobalTest(loadCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = loadCall;
+        auto result = parser.parse("load label");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "integer");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "123");
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "load");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
         ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "load");
     }
 
-    DefineGlobalTest(Integer__ShouldParse__WhenHexadecimalNumberIsProvided) {
-        auto parser = Integer;
-        auto result = parser.parse("0x123   ");
+    DefineGlobalTest(loadCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = loadCall;
+        ASSERT_THROW(parser.parse("load"), ParsingException);
+    }
+
+    DefineGlobalTest(storeCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = storeCall;
+        auto result = parser.parse("store label");
 
         ASSERT_TRUE(result.has_value());
-        ASSERT_EQ(result.value().get_tokens().size(), 1);
-        ASSERT_EQ(result.value().get_tokens()[0].type, "integer");
-        ASSERT_EQ(result.value().get_tokens()[0].value, "0x123");
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "store");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
         ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "store");
     }
 
-    DefineGlobalTest(Integer__ShouldThrow__WhenInvalidHexadecimalNumberIsProvided) {
-        auto parser = Integer;
-        ASSERT_THROW(parser.parse("0x123g"), ParsingException);
+    DefineGlobalTest(storeCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = storeCall;
+        ASSERT_THROW(parser.parse("store"), ParsingException);
+    }
+
+    DefineGlobalTest(inputCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = inputCall;
+        auto result = parser.parse("input label");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "input");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "input");
+    }
+
+    DefineGlobalTest(inputCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = inputCall;
+        ASSERT_THROW(parser.parse("input"), ParsingException);
+    }
+
+    DefineGlobalTest(outputCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = outputCall;
+        auto result = parser.parse("output label");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "output");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "output");
+    }
+
+    DefineGlobalTest(outputCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
+        auto parser = outputCall;
+        ASSERT_THROW(parser.parse("output"), ParsingException);
+    }
+
+    DefineGlobalTest(stopCall__ShouldParse__WhenArgsAreCorrect) {
+        auto parser = stopCall;
+        auto result = parser.parse("stop");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 1)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "stop");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "stop");
+    }
+
+    DefineGlobalTest(stopCall__ShouldThrow__WhenInstructionIsFollowedByLabel) {
+        auto parser = stopCall;
+        ASSERT_THROW(parser.parse("stop label"), ParsingException);
     }
 EndGlobalTestSuite
 
-RunGlobalTest(AssemblerSpecs, Label__ShouldParseSequencesWithLettersNumbersAndUnderscores)
-RunGlobalTest(AssemblerSpecs, Label__ShouldNotParseSequencesStartingWithNumber)
-RunGlobalTest(AssemblerSpecs, Label__ShouldNotParseSequencesWithInvalidChars)
-RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition)
-RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition__2)
-RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition__WhenLabelContainsUnderscore)
-RunGlobalTest(AssemblerSpecs, LabelDef__ShouldParseLabelDefinition__WhenThereIsSpaceBeforeColon)
-RunGlobalTest(AssemblerSpecs, LabelDef__ShouldThrow__WhenLabelStartsWithNumber)
-RunGlobalTest(AssemblerSpecs, LabelDef__ShouldThrow__WhenLabelContainsInvalidChars)
-RunGlobalTest(AssemblerSpecs, LabelDef__ShouldThrow__WhenDoubleDefinitionOfLabel)
-RunGlobalTest(AssemblerSpecs, EquDirective__ShouldParse__WhenNumberIsProvided)
-RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenNumberIsNotProvided)
-RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenLabelIsNotProvided)
-RunGlobalTest(AssemblerSpecs, EquDirective__ShouldThrow__WhenTooManyArguments)
-RunGlobalTest(AssemblerSpecs, EquDirective__ShouldParse__WhenArgIsHexadecimal)
-RunGlobalTest(AssemblerSpecs, EquDirective__ShouldParse__WhenArgIsLiteral)
-RunGlobalTest(AssemblerSpecs, Integer__ShouldParse__WhenNumberIsProvided)
-RunGlobalTest(AssemblerSpecs, Integer__ShouldParse__WhenHexadecimalNumberIsProvided)
-RunGlobalTest(AssemblerSpecs, Integer__ShouldThrow__WhenInvalidHexadecimalNumberIsProvided)
+RunGlobalTest(AssemblerSpecs, addCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, addCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, subCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, subCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, mulCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, mulCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, divCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, divCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, jmpCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, jmpCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, jmpnCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, jmpnCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, jmppCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, jmppCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, jmpzCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, jmpzCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, copyCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, copyCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, loadCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, loadCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, storeCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, storeCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, inputCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, inputCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, outputCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, outputCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, stopCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, stopCall__ShouldThrow__WhenInstructionIsFollowedByLabel)
