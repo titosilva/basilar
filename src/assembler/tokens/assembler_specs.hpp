@@ -35,7 +35,7 @@ namespace basilar::tokens {
     DefineInstruction(output, Label)
     DefineInstructionWithoutArgs(stop)
 
-    DefType(InstructionCall,
+    DefParser(InstructionCall,
         addCall
         | subCall
         | mulCall

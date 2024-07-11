@@ -83,7 +83,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 
     DefineGlobalTest(divCall__ShouldParse__WhenArgsAreCorrect) {
         auto parser = divCall;
-        auto result = parser.parse("div label");
+        auto result = parser.parse("\t\t\t\t\t\t     div   \t label");
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 2)
@@ -108,7 +108,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 
     DefineGlobalTest(jmpCall__ShouldParse__WhenArgsAreCorrect) {
         auto parser = jmpCall;
-        auto result = parser.parse("jmp label");
+        auto result = parser.parse("\tjmp         label\t\t");
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 2)
@@ -133,7 +133,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 
     DefineGlobalTest(jmpnCall__ShouldParse__WhenArgsAreCorrect) {
         auto parser = jmpnCall;
-        auto result = parser.parse("jmpn label");
+        auto result = parser.parse("                       jmpn \t label\t");
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 2)
@@ -158,7 +158,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 
     DefineGlobalTest(jmppCall__ShouldParse__WhenArgsAreCorrect) {
         auto parser = jmppCall;
-        auto result = parser.parse("jmpp label");
+        auto result = parser.parse("jmpp             label                           ");
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 2)
@@ -260,7 +260,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 
     DefineGlobalTest(storeCall__ShouldParse__WhenArgsAreCorrect) {
         auto parser = storeCall;
-        auto result = parser.parse("store label");
+        auto result = parser.parse("\t\tstore\t   label\t\t   \t\t   ");
 
         ASSERT_TRUE(result.has_value());
         ASSERT_EQ(result.value().get_tokens().size(), 2)
@@ -355,6 +355,91 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         auto parser = stopCall;
         ASSERT_THROW(parser.parse("stop label"), ParsingException);
     }
+
+    DefineGlobalTest(InstructionLine__ShouldParse__WhenLabelIsDefined) {
+        auto parser = InstructionLine;
+        auto result = parser.parse("label: add label");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 3)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value
+            << "; Token 1 type: " << result.value().get_tokens()[0].type;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "add");
+        ASSERT_EQ(result.value().get_tokens()[2].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[2].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "add");
+    }
+
+    DefineGlobalTest(InstructionLine__ShouldParse__WhenLabelIsNotDefined) {
+        auto parser = InstructionLine;
+        auto result = parser.parse("add label");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "add");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "add");
+    }
+
+    DefineGlobalTest(InstructionLine__ShouldParse__WhenInstructionIsCopy) {
+        auto parser = InstructionLine;
+        auto result = parser.parse("\t\t\t\t   label:\t \tcopy\tlabel1,label2");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 4)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "copy");
+        ASSERT_EQ(result.value().get_tokens()[2].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[2].value, "label1");
+        ASSERT_EQ(result.value().get_tokens()[3].type, "label");
+        ASSERT_EQ(result.value().get_tokens()[3].value, "label2");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "copy");
+    }
+
+    DefineGlobalTest(InstructionLine__ShouldParse__WhenInstructionIsStop) {
+        auto parser = InstructionLine;
+        auto result = parser.parse("label: stop");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+        
+        ASSERT_EQ(result.value().get_tokens()[0].type, "labeldef");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "label:");
+        ASSERT_EQ(result.value().get_tokens()[1].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "stop");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "stop");
+    }
 EndGlobalTestSuite
 
 RunGlobalTest(AssemblerSpecs, addCall__ShouldParse__WhenArgsAreCorrect)
@@ -385,3 +470,8 @@ RunGlobalTest(AssemblerSpecs, outputCall__ShouldParse__WhenArgsAreCorrect)
 RunGlobalTest(AssemblerSpecs, outputCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
 RunGlobalTest(AssemblerSpecs, stopCall__ShouldParse__WhenArgsAreCorrect)
 RunGlobalTest(AssemblerSpecs, stopCall__ShouldThrow__WhenInstructionIsFollowedByLabel)
+RunGlobalTest(AssemblerSpecs, InstructionLine__ShouldParse__WhenLabelIsDefined)
+RunGlobalTest(AssemblerSpecs, InstructionLine__ShouldParse__WhenLabelIsNotDefined)
+RunGlobalTest(AssemblerSpecs, InstructionLine__ShouldParse__WhenInstructionIsCopy)
+RunGlobalTest(AssemblerSpecs, InstructionLine__ShouldParse__WhenInstructionIsStop)
+
