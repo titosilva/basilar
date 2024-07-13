@@ -61,6 +61,8 @@ optional<ParseContext> ByteCountingStep::run(ParseContext ctx, LineSource*) {
 
     write_to_file(__file_dest, __byte_counter.get_human_readable_program());
     return nullopt;
+
+    // TODO: handle undefined references
 }
 
 } // namespace basilar::assembler::flow

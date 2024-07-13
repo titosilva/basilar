@@ -1,6 +1,7 @@
 #include "byte_counter.hpp"
 #include "assemblage_exception.hpp"
 #include "../utils/string_utils.hpp"
+#include "opcodes.hpp"
 
 #include <iostream>
 
@@ -41,7 +42,11 @@ void ByteCounter::handle_label(string operand) {
 }
 
 void ByteCounter::handle_instruction(string instruction, vector<string> operands) {
-    add(get_utility_string(instruction));
+    auto instr_data = get_utility_string(instruction);
+    auto opcode = Opcodes::get(instruction);
+    instr_data += get_absolute_string(opcode);
+    
+    add(instr_data);
 
     for (auto operand : operands) {
         auto address = __symbol_table.get_address(operand);
@@ -61,6 +66,9 @@ void ByteCounter::handle_instruction(string instruction, vector<string> operands
 void ByteCounter::handle_directive(string directive, vector<string> operands) {
     cout << "Directive: " << directive << endl;
     cout << "Operands: " << operands.size() << endl;
+
+    // TODO: support hexadecimals
+
     if (directive == "const") {
         for (auto operand : operands) {
             add(get_absolute_string(stoi(operand)));
@@ -103,7 +111,9 @@ vector<int> ByteCounter::get_machine_code() {
     vector<int> machine_code;
 
     for (auto [data, line] : __program) {
-        machine_code.push_back(stoi(data));
+        auto r = StringUtils::rereplace(data, regex{".*\\{\\d+\\}a.*"}, "$1");
+        auto address = stoi(r);
+        machine_code.push_back(address);
     }
 
     return machine_code;
