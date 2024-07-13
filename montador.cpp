@@ -15,13 +15,21 @@ int main(int argc, char** argv) {
 
     cout << "Source file path: " << source_file_path << endl;
     cout << "Output file path: " << output_file_path << endl;
-    cout << "Creating preprocessor flow..." << endl;
-    auto flow = AssemblerFactory::create_preprocessor_flow(source_file_path, output_file_path);
+    // cout << "Creating preprocessor flow..." << endl;
+    // auto flow = AssemblerFactory::create_preprocessor_flow(source_file_path, output_file_path);
 
-    cout << "Running preprocessor flow..." << endl;
+    // cout << "Running preprocessor flow..." << endl;
+    // flow.run();
+
+    // cout << "Preprocessor flow finished." << endl;
+
+    cout << "Creating assembler flow..." << endl;
+    auto flow = AssemblerFactory::create_assembler_flow(source_file_path, output_file_path);
+
+    cout << "Running assembler flow..." << endl;
     flow.run();
 
-    cout << "Preprocessor flow finished." << endl;
+    cout << "Assembler flow finished." << endl;
 
     return 0;
 }

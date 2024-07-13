@@ -58,29 +58,29 @@ namespace basilar::tokens {
     )
     EndDef
 
-    DefLine(SpaceDirectiveLine, 
-        "space" >> Args(Integer, "Expected integer after space directive")
-        | "space" >> EndLine
+    DefParser(spaceDirectiveCall, 
+        ("space" >> OptSpace >> Close)
+        | ("space" >> Args(Integer, "Expected integer after space directive"))
     ) Then Note("directive_call", "space")
-    Else Forbid(OptSpace >> "space", "Expected space directive") Then Fail
+    Else Forbid(OptSpace >> "space", "Invalid space directive") Then Fail
     EndDef
 
-    DefLine(ConstDirectiveLine, 
+    DefParser(constDirectiveCall, 
         "const" >> Args(Integer, "Expected number after const directive")
     ) Then Note("directive_call", "const")
-    Else Forbid(OptSpace >> "const", "Expected const directive") Then Fail
+    Else Forbid(OptSpace >> "const", "Invalid const directive") Then Fail
     EndDef
 
     DefLine(DirectiveLine, 
-        SpaceDirectiveLine
-        | ConstDirectiveLine
+        Optional(LabelDef) >> (
+            spaceDirectiveCall
+            | constDirectiveCall
+        )
     )
     EndDef
 
-    DefLine(AssemblerLine, 
-        InstructionLine
-        | DirectiveLine
-    ) Else Forbid(EndLine, "Expected instruction or directive") Then Fail
+    Def AssemblerParser As InstructionLine | DirectiveLine
+    Else Forbid(EndLine, "Expected instruction or directive") Then Fail
     EndDef
 
 } // namespace basilar::tokens

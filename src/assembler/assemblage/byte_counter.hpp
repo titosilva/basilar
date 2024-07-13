@@ -16,12 +16,14 @@ public:
     void handle_label(string label);
     void handle_instruction(string instruction, vector<string> operands);
     void handle_directive(string directive, vector<string> operands);
+    void next_line();
+    void add(string data);
 
     string get_human_readable_program();
     vector<int> get_machine_code();
 private:
     int __line = 0;
-    vector<pair(string, int)> __program; // <code, source line>
+    vector<pair<string, int>> __program; // <code, source line>
     SymbolTable __symbol_table;
 };
 

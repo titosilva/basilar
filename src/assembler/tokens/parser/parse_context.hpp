@@ -32,9 +32,23 @@ public:
         return nullopt;
     }
 
+    vector<Token> get_tokens_with_type(string type) const {
+        auto normalized = StringUtils::lower(type);
+        auto tokens = vector<Token>();
+
+        for (auto token : get_tokens()) {
+            if (StringUtils::lower(token.type) == normalized) {
+                tokens.push_back(token);
+            }
+        }
+
+        return tokens;
+    }
+
     const string get_remaining_input() const { return string(__remaining_input); }
     map<string, string> get_annotations() const { return map<string, string>(__annotations); }
     bool has_annotation(string key) const { return __annotations.find(key) != __annotations.end(); }
+    string get_annotation(string key) const { return __annotations.at(key); }
 
     ParseContext add_token(Token token) const {
         auto tokens = get_tokens();

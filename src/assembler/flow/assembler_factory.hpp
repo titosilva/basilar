@@ -4,7 +4,9 @@
 #include "./assembler_flow.hpp"
 #include "./preprocessor/preprocessor.hpp"
 #include "./parser_step/parser_step.hpp"
+#include "./byte_counting/byte_counting_step.hpp"
 #include "../tokens/preprocessing_specs.hpp"
+#include "../tokens/assembler_specs.hpp"
 #include "./tokenizer/line_reader.hpp"
 #include "./token_writer/token_writer.hpp"
 
@@ -17,7 +19,7 @@ class AssemblerFactory {
 public:
 
     static AssemblerFlow create_preprocessor_flow(string file_source, string file_dest);
-
+    static AssemblerFlow create_assembler_flow(string file_source, string file_dest);
 };
 
 } // namespace basilar::assembler::flow

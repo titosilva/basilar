@@ -1,5 +1,9 @@
 #include "symbol_table.hpp"
 
+// TODO: remove this
+#include <iostream>
+using namespace std;
+
 namespace basilar::assembler::assemblage {
 
 void SymbolTable::add_reference_to(string name, int address) {
@@ -16,7 +20,11 @@ bool SymbolTable::define(string name, int address) {
     if (__table.find(name) == __table.end()) {
         __table[name] = SymbolTableEntry();
         __table[name].name = name;
+        __table[name].address = address;
+        return true;
     }
+
+    cout << "SymbolTable::define: " << name << " already defined" << endl;
 
     if (__table[name].address != -1) {
         return false;
