@@ -12,4 +12,5 @@
 - VERIFICAR TODOs EM TODOS OS ARQUIVOS
 - Remover esses TODOs
 - Escrever instruções de compilação. Lembrar de adicionar um "make clean".
-- Tratar linhas que definem labels e instruções em linhas diferentes
+- Tratar linhas que definem labels e instruções em linhas diferentes (incluindo pré-processamento)
+- Implementar expressões aritméticas em labels

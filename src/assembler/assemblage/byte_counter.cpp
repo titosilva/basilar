@@ -24,13 +24,14 @@ void ByteCounter::add(string data) {
 }
 
 void ByteCounter::handle_label(string operand) {
+    cout << "Defining label: " << operand << endl;
     auto label = operand.substr(0, operand.size() - 1);
     auto added = __symbol_table.define(label, __program.size());
 
     if (!added) {
         throw AssemblageException("Label " + label + " already defined");
     }
-    cout << "Label: " << label << " defined at " << __program.size() << endl;
+    cout << "Label: \"" << label << "\" defined at " << __program.size() << endl;
 
     auto refs = __symbol_table.get_references(label);
     cout << "Refs: " << refs.size() << endl;
@@ -42,6 +43,7 @@ void ByteCounter::handle_label(string operand) {
 }
 
 void ByteCounter::handle_instruction(string instruction, vector<string> operands) {
+    cout << "Instruction: " << instruction << endl;
     auto instr_data = get_utility_string(instruction);
     auto opcode = Opcodes::get(instruction);
     instr_data += get_absolute_string(opcode);
@@ -49,17 +51,16 @@ void ByteCounter::handle_instruction(string instruction, vector<string> operands
     add(instr_data);
 
     for (auto operand : operands) {
-        auto address = __symbol_table.get_address(operand);
         auto data = get_utility_string(operand);
 
-        if (address == -1) {
-            __symbol_table.add_reference_to(operand, __program.size());
-            cout << "Undefined reference: " << operand << " at " << __program.size() << endl;
-        } else {
+        auto address = __symbol_table.get_address(operand);
+        if (address != -1) {
             data += get_absolute_string(address);
         }
 
         add(data);
+        
+        __symbol_table.add_reference_to(operand, __program.size());
     }
 }
 
@@ -85,22 +86,45 @@ void ByteCounter::handle_directive(string directive, vector<string> operands) {
             }
         }
     }
+
+    if (directive == "public") {
+        for (auto operand : operands) {
+            __symbol_table.set_public(operand);
+        }
+    }
+
+    if (directive == "extern") {
+        for (auto operand : operands) {
+            auto label = operand.substr(0, operand.size() - 1);
+            cout << "Defining external: " << label << endl;
+            __symbol_table.define_external(label);
+
+            auto refs = __symbol_table.get_references(label);
+
+            for (auto ref : refs) {
+                __program[ref].first = get_utility_string(label) + get_absolute_string(0);
+            }
+        }
+    }
 }
 
 void ByteCounter::next_line() {
     __line++;
 }
 
-string ByteCounter::get_human_readable_program() {
+string ByteCounter::to_human_readable_code() {
     string program = "";
-    auto current_line = 0;
+    auto current_line = -1;
 
+    auto address = 0;
     for (auto [data, line] : __program) {
         if (line != current_line) {
             program += "\n";
             current_line = line;
+            program += "end " + to_string(address) + ". ";
         }
 
+        address++;
         program += data + " ";
     }
 
@@ -121,6 +145,32 @@ vector<int> ByteCounter::get_machine_code() {
     }
 
     return machine_code;
+}
+
+string ByteCounter::to_object_code() {
+    string object_code;
+
+    object_code += "USO\n";
+    auto externals = __symbol_table.enumerate_external_references();
+    for (auto [name, address] : externals) {
+        object_code += name + "\t" + to_string(address) + "\n";
+    }
+
+    object_code += "DEF\n";
+    auto publics = __symbol_table.enumerate_public_symbols();
+    for (auto [name, address] : publics) {
+        object_code += name + "\t" + to_string(address) + "\n";
+    }
+
+    object_code += "REAL\n\n";
+    // TODO: add references to relative addresses in binary
+
+    auto machine_code = get_machine_code();
+    for (auto code : machine_code) {
+        object_code += to_string(code) + " ";
+    }
+
+    return object_code;
 }
 
 } // namespace basilar::assembler::assemblage

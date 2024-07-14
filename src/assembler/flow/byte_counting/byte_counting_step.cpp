@@ -18,18 +18,16 @@ void write_to_file(string file_dest, string content) {
 }
 
 optional<ParseContext> ByteCountingStep::run(ParseContext ctx, LineSource*) {
-    auto annotations = ctx.get_annotations();
-    for (auto annotation : annotations) {
-        cout << "Annotation: " << annotation.first << " Value: " << annotation.second << endl;
-    }
+    // TODO: support address expressions (eg. label + 1)
+    // to be used with spaces
     
-    if (ctx.has_annotation("has_label")) {
-        auto token = ctx.get_token_with_type(ParserTypeOf(LabelDef));
-        auto label = token->value;
-        __byte_counter.handle_label(label);
-    }
-
     if (ctx.has_annotation("instruction_call")) {
+        if (ctx.has_annotation("has_label")) {
+            auto token = ctx.get_token_with_type(ParserTypeOf(LabelDef));
+            auto label = token->value;
+            __byte_counter.handle_label(label);
+        }
+
         auto instruction = ctx.get_annotation("instruction_call");
         auto operands = vector<string>();
 
@@ -42,34 +40,41 @@ optional<ParseContext> ByteCountingStep::run(ParseContext ctx, LineSource*) {
 
     if (ctx.has_annotation("directive_call")) {
         auto directive = ctx.get_annotation("directive_call");
-        auto operands = vector<string>();
 
+        string label;
+        bool has_label = false;
         int idx = 1;
         if (ctx.has_annotation("has_label")) {
+            has_label = true;
             idx++;
+            auto token = ctx.get_token_with_type(ParserTypeOf(LabelDef));
+            label = token->value;
         }
 
-        auto tokens = ctx.get_tokens();
-        for (int i = idx; i < tokens.size(); i++) {
-            operands.push_back(tokens[i].value);
-        }
+        if (directive != "extern") {
+            if (has_label) {
+                __byte_counter.handle_label(label);
+            }
 
-        __byte_counter.handle_directive(directive, operands);
+            auto operands = vector<string>();
+            auto tokens = ctx.get_tokens();
+            for (int i = idx; i < tokens.size(); i++) {
+                operands.push_back(tokens[i].value);
+            }
+            
+            __byte_counter.handle_directive(directive, operands);
+        } else {
+            __byte_counter.handle_directive(directive, vector<string>({label}));
+        }
     }
 
     __byte_counter.next_line();
 
-
     // TODO: change to write only in the end
-    write_to_file(__file_dest + ".debug", __byte_counter.get_human_readable_program());
-    auto machine_code = __byte_counter.get_machine_code();
+    write_to_file(__file_dest + ".debug", __byte_counter.to_human_readable_code());
 
-    string machine_code_str;
-    for (auto code : machine_code) {
-        machine_code_str += to_string(code) + " ";
-    }
-
-    write_to_file(__file_dest, machine_code_str);
+    auto object_code = __byte_counter.to_object_code();
+    write_to_file(__file_dest, object_code);
     return nullopt;
 
     // TODO: handle undefined references

@@ -1,18 +1,19 @@
-(input){12}a (old_data){29}a 
-(load){10}a (old_data){29}a 
-(div){4}a (dois){28}a 
-(store){11}a (new_data){30}a 
-(mul){3}a (dois){28}a 
-(store){11}a (tmp_data){31}a 
-(load){10}a (old_data){29}a 
-(sub){2}a (tmp_data){31}a 
-(store){11}a (tmp_data){31}a 
-(output){13}a (tmp_data){31}a 
-(copy){9}a (new_data){30}a (old_data){29}a 
-(load){10}a (old_data){29}a 
-(jmpp){7}a (l1){4}a 
-(stop){14}a 
-{2}a 
-{0}a 
-{0}a 
-{0}a 
+
+end 0. (input){12}a (old_data){29}a 
+end 2. (load){10}a (old_data){29}a 
+end 4. (div){4}a (dois){28}a 
+end 6. (store){11}a (new_data){30}a 
+end 8. (mul){3}a (dois){28}a 
+end 10. (store){11}a (tmp_data){31}a 
+end 12. (load){10}a (old_data){29}a 
+end 14. (sub){2}a (tmp_data){31}a 
+end 16. (store){11}a (tmp_data){31}a 
+end 18. (output){13}a (tmp_data){31}a 
+end 20. (copy){9}a (new_data){30}a (old_data){29}a 
+end 23. (load){10}a (old_data){29}a 
+end 25. (jmpp){7}a (l1){4}a 
+end 27. (stop){14}a 
+end 28. {2}a 
+end 29. {0}a 
+end 30. {0}a 
+end 31. {0}a 
