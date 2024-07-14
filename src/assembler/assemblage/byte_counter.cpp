@@ -111,9 +111,13 @@ vector<int> ByteCounter::get_machine_code() {
     vector<int> machine_code;
 
     for (auto [data, line] : __program) {
-        auto r = StringUtils::rereplace(data, regex{".*\\{\\d+\\}a.*"}, "$1");
-        auto address = stoi(r);
-        machine_code.push_back(address);
+        try {
+            auto r = StringUtils::rereplace(data, regex{".*\\{(\\d+)\\}a.*"}, "$1");
+            auto address = stoi(r);
+            machine_code.push_back(address);
+        } catch (...) {
+            continue;
+        }
     }
 
     return machine_code;

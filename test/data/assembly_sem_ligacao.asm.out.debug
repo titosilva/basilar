@@ -1,0 +1,18 @@
+(input){12}a (old_data){29}a 
+(load){10}a (old_data){29}a 
+(div){4}a (dois){28}a 
+(store){11}a (new_data){30}a 
+(mul){3}a (dois){28}a 
+(store){11}a (tmp_data){31}a 
+(load){10}a (old_data){29}a 
+(sub){2}a (tmp_data){31}a 
+(store){11}a (tmp_data){31}a 
+(output){13}a (tmp_data){31}a 
+(copy){9}a (new_data){30}a (old_data){29}a 
+(load){10}a (old_data){29}a 
+(jmpp){7}a (l1){4}a 
+(stop){14}a 
+{2}a 
+{0}a 
+{0}a 
+{0}a 

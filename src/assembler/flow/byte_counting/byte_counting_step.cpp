@@ -59,7 +59,17 @@ optional<ParseContext> ByteCountingStep::run(ParseContext ctx, LineSource*) {
 
     __byte_counter.next_line();
 
-    write_to_file(__file_dest, __byte_counter.get_human_readable_program());
+
+    // TODO: change to write only in the end
+    write_to_file(__file_dest + ".debug", __byte_counter.get_human_readable_program());
+    auto machine_code = __byte_counter.get_machine_code();
+
+    string machine_code_str;
+    for (auto code : machine_code) {
+        machine_code_str += to_string(code) + " ";
+    }
+
+    write_to_file(__file_dest, machine_code_str);
     return nullopt;
 
     // TODO: handle undefined references
