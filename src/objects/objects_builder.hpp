@@ -19,8 +19,14 @@ public:
     void set_public(string name);
     void absolute(int value);
 
-    string build_debug_file();
-    string build_object_file();
+    int get_current_address();
+    void write_debug_info(int address, string info);
+    void append_debug_info(string info);
+
+    void next_line();
+
+    string build_debug_code();
+    string build_object_code();
 private:
     Memory __memory;
     SymbolTable __symbol_table;

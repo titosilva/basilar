@@ -1,4 +1,5 @@
 #include "assembler_flow.hpp"
+#include "../../utils/logger.hpp"
 
 // TODO: Remove this
 #include <iostream>
@@ -11,12 +12,18 @@ AssemblerFlow AssemblerFlow::add_step(AssemblerStep* step) {
     return *this;
 }
 
-void AssemblerFlow::run() {
-    while (this->__source->next_line()) {
-        auto ctx = this->__source->read_current_line();
+AssemblerFlow AssemblerFlow::add_post_step(AssemblerPostStep* step) {
+    __post_steps.push_back(step);
+    return *this;
+}
+
+void AssemblerFlow::run() {    
+    LOG_DEBUG("Running assembler steps");
+    while (__source->next_line()) {
+        auto ctx = __source->read_current_line();
         
-        for (auto step : this->__steps) {
-            auto result = step->run(ctx, this->__source);
+        for (auto step : __steps) {
+            auto result = step->run(ctx, __source);
 
             if (!result.has_value()) {
                 break;
@@ -25,6 +32,13 @@ void AssemblerFlow::run() {
             ctx = result.value();
         }
     }
+
+    LOG_DEBUG("Running assembler post steps");
+    for (auto step : __post_steps) {
+        step->run();
+    }
+
+    LOG_DEBUG("Assembler steps finished");
 }
 
 }  // namespace basilar::assembler::flow

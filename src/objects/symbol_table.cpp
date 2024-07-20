@@ -1,4 +1,7 @@
 #include "symbol_table.hpp"
+#include "../exceptions/semantic_exception.hpp"
+
+using namespace basilar::exceptions;
 
 namespace basilar::objects {
 
@@ -39,6 +42,11 @@ void SymbolTable::define_public(string name) {
         __symbols[name] = __default_symbol(name);
     }
 
+    // TODO: move this to other class
+    if (__symbols[name].is_external) {
+        throw semantic_exception("Cannot set public an external symbol: " + name);
+    }
+
     __symbols[name].is_public = true;
 }
 
@@ -47,8 +55,8 @@ int SymbolTable::refer(string name, int address) {
         __symbols[name] = __default_symbol(name);
     }
 
-    if (__symbols[name].address == -1) {
-        __symbols[name].references.push_back(address);
+    if (__symbols[name].address == -1 || __symbols[name].is_external) {
+        __symbols[name].pending_references.push_back(address);
     }
 
     return __symbols[name].address;
@@ -59,7 +67,7 @@ list<int> SymbolTable::get_pending_references(string name) {
         return list<int>();
     }
 
-    return __symbols[name].references;
+    return __symbols[name].pending_references;
 }
 
 map<string, Symbol> SymbolTable::get_table() {

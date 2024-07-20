@@ -14,3 +14,5 @@
 - Escrever instruções de compilação. Lembrar de adicionar um "make clean".
 - Tratar linhas que definem labels e instruções em linhas diferentes (incluindo pré-processamento)
 - Implementar expressões aritméticas em labels
+- Fazer compilação do zero e remover warnings
+- Adicionar caso de teste para extern redefinido como public

@@ -1,19 +1,25 @@
 
-end 0. (input){12}a (old_data) 
-end 2. (load){10}a{29}a (old_data) 
-end 4. (div){4}a{29}a (dois) 
-end 6. (store){11}a{28}a (new_data) 
-end 8. (mul){3}a{30}a (dois) 
-end 10. (store){11}a{28}a (tmp_data) 
-end 12. (load){10}a{31}a (old_data) 
-end 14. (sub){2}a{29}a (tmp_data) 
-end 16. (store){11}a{31}a (tmp_data) 
-end 18. (output){13}a{31}a (tmp_data) 
-end 20. (copy){9}a{31}a (new_data) (old_data){30}a 
-end 23. (load){10}a{29}a (old_data) 
-end 25. (jmpp){7}a{29}a (l1){4}a 
-end 27. (stop){14}a 
-end 28. {2}a 
-end 29. {0}a 
-end 30. {0}a 
-end 31. {0}a 
+end 0. 12a{input}	29r{old_data}
+end 2. 10a{load}	29r{old_data}
+end 4. 4a{div|def:l1}	28r{dois}
+end 6. 11a{store}	30r{new_data}
+end 8. 3a{mul}	28r{dois}
+end 10. 11a{store}	31r{tmp_data}
+end 12. 10a{load}	29r{old_data}
+end 14. 2a{sub}	31r{tmp_data}
+end 16. 11a{store}	31r{tmp_data}
+end 18. 13a{output}	31r{tmp_data}
+end 20. 9a{copy}	30r{new_data}	29r{old_data}
+end 23. 10a{load}	29r{old_data}
+end 25. 7a{jmpp}	4r{l1}
+end 27. 14a{stop}
+end 28. 2a{def:dois}
+end 29. 0a{def:old_data}
+end 30. 0a{def:new_data}
+end 31. 0a{def:tmp_data}
+
+dois def: 28 pendings: 5 9 
+l1 def: 4 pendings: 
+new_data def: 30 pendings: 7 21 
+old_data def: 29 pendings: 1 3 13 22 24 
+tmp_data def: 31 pendings: 11 15 17 19 

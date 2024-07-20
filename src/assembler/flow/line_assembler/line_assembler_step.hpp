@@ -1,18 +1,22 @@
 #pragma once
 
 #include "../../assemblage/byte_counter.hpp"
+#include "../../assemblage/line_handler.hpp"
 #include "../assembler_steps.hpp"
 
 using namespace basilar::assembler::assemblage;
 
 namespace basilar::assembler::flow {
 
-class ByteCountingStep : public AssemblerStep {
+class LineAssemblerStep : public AssemblerStep {
 public:
-    ByteCountingStep(string file_dest) : __file_dest(file_dest) {}
+    LineAssemblerStep(string file_dest) : __file_dest(file_dest) {}
     optional<ParseContext> run(ParseContext ctx, LineSource* source) override;
+
+    void write_object_file();
+    void write_debug_file();
 private:
-    ByteCounter __byte_counter;
+    LineHandler __line_handler;
     string __file_dest;
 };
 

@@ -14,7 +14,7 @@ public:
     bool is_public;
     bool is_external;
 
-    list<int> references;
+    list<int> pending_references;
 };
 
 } // namespace basilar::objects

@@ -7,9 +7,7 @@ namespace basilar::objects {
 
 void ObjectsBuilder::refer(string name) {
     auto r = __symbol_table.refer(name, __memory.get_current_address());
-
     __memory.add_relative(r);
-    __memory.set_debug_info(__memory.get_current_address() - 1, name);
 }
 
 void ObjectsBuilder::define(string name) {
@@ -31,6 +29,11 @@ void ObjectsBuilder::define_external(string name) {
     if (!defined) {
         throw semantic_exception("Symbol \"" + name + "\" already defined", __memory.get_current_line());
     }
+
+    auto references = __symbol_table.get_pending_references(name);
+    for (auto reference : references) {
+        __memory.write(reference, 0);
+    }
 }
 
 void ObjectsBuilder::set_public(string name) {
@@ -41,16 +44,40 @@ void ObjectsBuilder::absolute(int value) {
     __memory.add_absolute(value);
 }
 
-string ObjectsBuilder::build_debug_file() {
+int ObjectsBuilder::get_current_address() {
+    return __memory.get_current_address();
+}
+
+void ObjectsBuilder::write_debug_info(int address, string info) {
+    auto src_debug_info = __memory.read(address).debug_info;
+
+    if (src_debug_info != "") {
+        src_debug_info += "|";
+    }
+
+    __memory.set_debug_info(address, src_debug_info + info);
+}
+
+void ObjectsBuilder::append_debug_info(string info) {
+    auto current_address = __memory.get_current_address();
+    write_debug_info(current_address - 1, info);
+}
+
+void ObjectsBuilder::next_line() {
+    __memory.next_line();
+}
+
+string ObjectsBuilder::build_debug_code() {
     string debug_file = "";
 
     // Add the memory lines
-    int current_line = 0;
+    int current_line = -1;
     for (int i = 0; i < __memory.get_current_address(); i++) {
         auto entry = __memory.read(i);
 
         if (entry.line != current_line) {
-            debug_file += "end\t" + to_string(i) + "|\t";
+            debug_file += "\nend " + to_string(i) + ". ";
+            current_line = entry.line;
         } else {
             debug_file += "\t";
         }
@@ -66,29 +93,24 @@ string ObjectsBuilder::build_debug_file() {
         if (entry.debug_info != "") {
             debug_file += "{" + entry.debug_info + "}";
         }
-
-        if (entry.line != current_line) {
-            debug_file += "\n";
-            current_line = entry.line;
-        }
     }
 
     // Add the symbol table
     debug_file += "\n\n";
     for (auto [name, entry] : __symbol_table.get_table()) {
-        debug_file += name + "\t" + to_string(entry.address);
+        debug_file += name + " def: " + to_string(entry.address);
 
         if (entry.is_public) {
-            debug_file += "pub";
+            debug_file += "(pub)";
         }
 
         if (entry.is_external) {
-            debug_file += "ext";
+            debug_file += "(ext)";
         }
 
-        debug_file += "\t";
+        debug_file += " pendings: ";
 
-        for (auto reference : entry.references) {
+        for (auto reference : entry.pending_references) {
             debug_file += to_string(reference) + " ";
         }
 
@@ -98,7 +120,7 @@ string ObjectsBuilder::build_debug_file() {
     return debug_file;
 }
 
-string ObjectsBuilder::build_object_file() {
+string ObjectsBuilder::build_object_code() {
     string object_file = "";
 
     bool has_linking = false;
@@ -109,12 +131,16 @@ string ObjectsBuilder::build_object_file() {
         }
     }
 
-    if (!has_linking) {
+    if (has_linking) {
         // Add the external references
         object_file += "USO\n";
         for (auto [name, entry] : __symbol_table.get_table()) {
-            if (entry.is_external) {
-                object_file += name + "\t" + to_string(entry.address) + "\n";
+            if (!entry.is_external) {
+                continue;
+            }
+
+            for (auto reference : entry.pending_references) {
+                object_file += name + "\t" + to_string(reference) + "\n";
             }
         }
 
@@ -137,11 +163,11 @@ string ObjectsBuilder::build_object_file() {
             }
         }
 
-        object_file += "\n";
+        object_file += "\n\n";
     }
 
     // Add the memory values
-    for (int i = 0; i < __memory.get_current_address(); i++) {
+    for (int i = 0; i < __memory.get_current_address(); i++) {        
         auto entry = __memory.read(i);
         object_file += to_string(entry.value);
         object_file += " ";

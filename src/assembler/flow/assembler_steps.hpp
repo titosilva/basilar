@@ -20,4 +20,9 @@ public:
     virtual optional<ParseContext> run(ParseContext ctx, LineSource* source) = 0;
 };
 
+class AssemblerPostStep {
+public:
+    virtual void run() = 0;
+};
+
 } // namespace basilar::assembler::flow

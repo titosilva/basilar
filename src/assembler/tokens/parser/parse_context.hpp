@@ -12,6 +12,7 @@ namespace basilar::assembler::tokens::parser {
 
 struct ParseContext {
 public:
+    ParseContext() : __remaining_input("") {}
     ParseContext(string input) : __remaining_input(input) {}
     ParseContext(vector<Token> tokens, string remaining_input, map<string, string> annotations) 
         : __tokens(tokens), __remaining_input(remaining_input), __annotations(annotations) {}
