@@ -7,7 +7,7 @@ namespace basilar::exceptions {
 
 class linking_exception : public exception {
 public:
-    semantic_exception(string message) : message(message) {}
+    linking_exception(string message) : message(message) {}
     string message;
 
     char const* what() const noexcept override {

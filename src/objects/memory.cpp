@@ -41,7 +41,7 @@ void Memory::set_relative(int address) {
 }
 
 void Memory::rellocate(int base_address) {
-    for (int i = 0; i < __memory.size(); i++) {
+    for (uint i = 0; i < __memory.size(); i++) {
         auto entry = __memory[i];
         if (!entry.is_absolute) {
             __memory[i].value += base_address;
@@ -49,7 +49,7 @@ void Memory::rellocate(int base_address) {
     }
 }
 
-void Memory::join(Memory other) {
+void Memory::merge(Memory other) {
     for (auto entry : other.__memory) {
         __memory.push_back(entry);
     }

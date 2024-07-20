@@ -1,4 +1,5 @@
 #include "object_reader.hpp"
+#include "../../utils/logger.hpp"
 
 #include <optional>
 #include <string>
@@ -16,8 +17,8 @@ void skip_spaces(string source, int& index) {
 
 void skip_blank_lines(string source, int& index) {
     while (source[index] == '\n' || source[index] == '\r') {
-        skip_spaces(source, index);
         index++;
+        skip_spaces(source, index);
     }
 }
 
@@ -67,6 +68,7 @@ optional<pair<string, int>> read_symbol(string source, int& index) {
     string value = read_token(source, index);
 
     if (value.empty()) {
+        index -= symbol.size();
         return nullopt;
     }
 
@@ -75,39 +77,69 @@ optional<pair<string, int>> read_symbol(string source, int& index) {
 
 ObjectsBuilder ObjectsReader::read() {
     skip_blank_lines(__source, __current_index);
+    LOG_DEBUG("Reading object file");
+
     if (skip_if(__source, __current_index, "USO")) {
+        LOG_DEBUG("Reading USO...");
+
+        int entries_count = 0;
         skip_blank_lines(__source, __current_index);
-        while (auto symbol = read_symbol(__source, __current_index), symbol.has_value()) {
+        while (auto symbol = read_symbol(__source, __current_index)) {
             __objects_builder.add_reference(symbol->first, symbol->second);
+            entries_count++;
+            skip_blank_lines(__source, __current_index);
         }
+
+        LOG_DEBUG("USO entries count: " + to_string(entries_count));
+        skip_blank_lines(__source, __current_index);
     }
 
     skip_blank_lines(__source, __current_index);
     if (skip_if(__source, __current_index, "DEF")) {
+        LOG_DEBUG("Reading DEF...");
+
+        int entries_count = 0;
         skip_blank_lines(__source, __current_index);
-        while (auto symbol = read_symbol(__source, __current_index), symbol.has_value()) {
+        while (auto symbol = read_symbol(__source, __current_index)) {
             __objects_builder.add_definition(symbol->first, symbol->second);
+            entries_count++;
+            skip_blank_lines(__source, __current_index);
         }
+
+        LOG_DEBUG("DEF entries count: " + to_string(entries_count));
+        skip_blank_lines(__source, __current_index);
     }
 
     skip_blank_lines(__source, __current_index);
     vector<bool> relatives;
     if (skip_if(__source, __current_index, "REAL")) {
+        LOG_DEBUG("Reading REAL...");
+
+        int entries_count = 0;
         skip_blank_lines(__source, __current_index);
         while (__source[__current_index] != '\n' && __source[__current_index] != '\r') {
             auto c = __source[__current_index];
             relatives.push_back(c == '1');
             __current_index++;
+            entries_count++;
         }
+
+        LOG_DEBUG("REAL entries count: " + to_string(entries_count));
+        skip_blank_lines(__source, __current_index);
     }
 
+    LOG_DEBUG("Reading memory entries...");
     skip_blank_lines(__source, __current_index);
-    int current_index = 0;
     while (__source[__current_index] != '\n' && __source[__current_index] != '\r') {
-        string value = read_token(__source, __current_index);
-        auto value = stoi(value);
+        if (__source[__current_index] == '\0' || __current_index >= __source.size()) {
+            break;
+        }
 
-        if (relatives[current_index]) {
+        skip_spaces(__source, __current_index);
+        string valueStr = read_token(__source, __current_index);
+        auto value = stoi(valueStr);
+
+        if (relatives[__objects_builder.get_current_address()]) {
             __objects_builder.relative(value);
         } else {
             __objects_builder.absolute(value);

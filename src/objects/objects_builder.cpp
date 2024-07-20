@@ -61,14 +61,14 @@ void ObjectsBuilder::rellocate(int base_address) {
     __symbol_table.rellocate(base_address);
 }
 
-void ObjectsBuilder::join(ObjectsBuilder& other) {
+void ObjectsBuilder::link(ObjectsBuilder& other) {
     auto base_address = __memory.get_current_address();
 
     other.__memory.rellocate(base_address);
-    __memory.join(other.__memory);
+    __memory.merge(other.__memory);
 
     other.__symbol_table.rellocate(base_address);
-    __symbol_table.join(other.__symbol_table, base_address);
+    __symbol_table.merge(other.__symbol_table);
 
     resolve();
 }

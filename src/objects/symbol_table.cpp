@@ -80,13 +80,13 @@ void SymbolTable::rellocate(int base_address) {
     }
 }
 
-void SymbolTable::join(SymbolTable other) {
+void SymbolTable::merge(SymbolTable other) {
     for (auto& [name, symbol] : other.__symbols) {
         if (__symbols.find(name) == __symbols.end()) {
             __symbols[name] = symbol;
             continue;
         }
-        
+
         if (__symbols[name].address != -1 && symbol.address != -1) {
             throw linking_exception("Symbol \"" + name + "\" defined in both object files");   
         }

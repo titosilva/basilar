@@ -24,7 +24,7 @@ public:
     void add_definition(string name, int address);
     void rellocate(int base_address);
     void resolve();
-    void join(ObjectsBuilder& other);
+    void link(ObjectsBuilder& other);
 
     // Used during both assembly and linking
     void absolute(int value);

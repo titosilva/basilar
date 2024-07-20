@@ -13,7 +13,7 @@ public:
     ObjectsReader(string source) : __source(source) {}
     ObjectsBuilder read();
 private:
-    int __current_index = 0;
+    uint __current_index = 0;
     string __source;
     ObjectsBuilder __objects_builder;
 };

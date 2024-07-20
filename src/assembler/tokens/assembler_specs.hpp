@@ -97,8 +97,8 @@ namespace basilar::tokens {
     DefParser(publicDirectiveCall, 
         Optional(LabelDef) >>
         "public" >> Args(Label, "Expected label after begin directive")
-    ) Then Note("directive_call", "begin")
-    Else Forbid(OptSpace >> "begin", "Invalid begin directive") Then Fail
+    ) Then Note("directive_call", "public")
+    Else Forbid(OptSpace >> "public", "Invalid begin directive") Then Fail
     EndDef
 
     DefLine(DirectiveLine, 

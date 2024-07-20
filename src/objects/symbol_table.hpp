@@ -18,7 +18,7 @@ public:
 
     void add_pending_reference(string name, int address);
     void rellocate(int base_address);
-    void join(SymbolTable other);
+    void merge(SymbolTable other);
 
     list<int> get_pending_references(string name);
     map<string, Symbol> get_table();
