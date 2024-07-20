@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../assemblage/byte_counter.hpp"
 #include "../../assemblage/line_handler.hpp"
 #include "../assembler_steps.hpp"
 
