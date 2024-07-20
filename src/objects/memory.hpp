@@ -19,6 +19,9 @@ public:
 
     void set_debug_info(int address, string info);
 
+    void rellocate(int base_address);
+    void join(Memory other);
+
     int get_current_address();
     int get_current_line();
     void next_line();

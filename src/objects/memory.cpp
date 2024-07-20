@@ -40,6 +40,21 @@ void Memory::set_relative(int address) {
     __memory[address].is_absolute = false;
 }
 
+void Memory::rellocate(int base_address) {
+    for (int i = 0; i < __memory.size(); i++) {
+        auto entry = __memory[i];
+        if (!entry.is_absolute) {
+            __memory[i].value += base_address;
+        }
+    }
+}
+
+void Memory::join(Memory other) {
+    for (auto entry : other.__memory) {
+        __memory.push_back(entry);
+    }
+}
+
 int Memory::get_current_address() {
     return __memory.size();
 }

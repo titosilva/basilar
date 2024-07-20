@@ -15,6 +15,11 @@ public:
     bool define_external(string name);
     void define_public(string name);
     int refer(string name, int address);
+
+    void add_pending_reference(string name, int address);
+    void rellocate(int base_address);
+    void join(SymbolTable other);
+
     list<int> get_pending_references(string name);
     map<string, Symbol> get_table();
 private:

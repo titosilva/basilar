@@ -22,6 +22,9 @@ public:
     // Used during the linking process
     void add_reference(string name, int address);
     void add_definition(string name, int address);
+    void rellocate(int base_address);
+    void resolve();
+    void join(ObjectsBuilder& other);
 
     // Used during both assembly and linking
     void absolute(int value);

@@ -40,8 +40,49 @@ void ObjectsBuilder::set_public(string name) {
     __symbol_table.define_public(name);
 }
 
+void ObjectsBuilder::add_reference(string name, int address) {
+    __symbol_table.add_pending_reference(name, address);
+}
+
+void ObjectsBuilder::add_definition(string name, int address) {
+    __symbol_table.define(name, address);
+}
+
 void ObjectsBuilder::absolute(int value) {
     __memory.add_absolute(value);
+}
+
+void ObjectsBuilder::relative(int value) {
+    __memory.add_relative(value);
+}
+
+void ObjectsBuilder::rellocate(int base_address) {
+    __memory.rellocate(base_address);
+    __symbol_table.rellocate(base_address);
+}
+
+void ObjectsBuilder::join(ObjectsBuilder& other) {
+    auto base_address = __memory.get_current_address();
+
+    other.__memory.rellocate(base_address);
+    __memory.join(other.__memory);
+
+    other.__symbol_table.rellocate(base_address);
+    __symbol_table.join(other.__symbol_table, base_address);
+
+    resolve();
+}
+
+void ObjectsBuilder::resolve() {
+    for (auto [name, entry] : __symbol_table.get_table()) {
+        if (entry.address == -1) {
+            continue;
+        }
+
+        for (auto reference : entry.pending_references) {
+            __memory.write(reference, entry.address);
+        }
+    }
 }
 
 int ObjectsBuilder::get_current_address() {

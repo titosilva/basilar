@@ -1,5 +1,6 @@
 #include "symbol_table.hpp"
 #include "../exceptions/semantic_exception.hpp"
+#include "../exceptions/linking_exception.hpp"
 
 using namespace basilar::exceptions;
 
@@ -60,6 +61,52 @@ int SymbolTable::refer(string name, int address) {
     }
 
     return __symbols[name].address;
+}
+
+void SymbolTable::rellocate(int base_address) {
+    for (auto& [name, symbol] : __symbols) {
+        if (symbol.address == -1) {
+            continue;
+        }
+
+        if (symbol.is_external) {
+            continue;
+        }
+
+        symbol.address += base_address;
+        for (auto& reference : symbol.pending_references) {
+            reference += base_address;
+        }
+    }
+}
+
+void SymbolTable::join(SymbolTable other) {
+    for (auto& [name, symbol] : other.__symbols) {
+        if (__symbols.find(name) == __symbols.end()) {
+            __symbols[name] = symbol;
+            continue;
+        }
+        
+        if (__symbols[name].address != -1 && symbol.address != -1) {
+            throw linking_exception("Symbol \"" + name + "\" defined in both object files");   
+        }
+
+        if (__symbols[name].address == -1) {
+            __symbols[name].address = symbol.address;
+        }
+
+        for (auto reference : symbol.pending_references) {
+            __symbols[name].pending_references.push_back(reference);
+        }
+    }
+}
+
+void SymbolTable::add_pending_reference(string name, int address) {
+    if (__symbols.find(name) == __symbols.end()) {
+        __symbols[name] = __default_symbol(name);
+    }
+
+    __symbols[name].pending_references.push_back(address);
 }
 
 list<int> SymbolTable::get_pending_references(string name) {
