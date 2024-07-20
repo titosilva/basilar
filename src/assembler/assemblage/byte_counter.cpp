@@ -1,13 +1,11 @@
 #include "byte_counter.hpp"
 #include "assemblage_exception.hpp"
-#include "../utils/string_utils.hpp"
+#include "../../utils/string_utils.hpp"
 #include "opcodes.hpp"
 
+// TODO: remove this
 #include <iostream>
-
 using namespace std;
-
-using namespace basilar::utils;
 
 namespace basilar::assembler::assemblage {
 

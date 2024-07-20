@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+
+using namespace std;
+
 namespace basilar::objects {
 
 class MemoryEntry {

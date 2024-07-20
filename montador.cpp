@@ -1,4 +1,5 @@
 #include "./src/assembler/flow/assembler_factory.hpp"
+#include "./src/utils/logger.hpp"
 #include <iostream>
 
 using namespace std;
@@ -13,6 +14,7 @@ int main(int argc, char** argv) {
     auto source_file_path = argv[1];
     auto output_file_path = argv[2];
 
+    LOG_DEBUG("Starting assembler...");
     cout << "Source file path: " << source_file_path << endl;
     cout << "Output file path: " << output_file_path << endl;
     // cout << "Creating preprocessor flow..." << endl;

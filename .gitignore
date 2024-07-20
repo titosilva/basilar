@@ -2,5 +2,7 @@
 build
 build-test
 ligador
+ligador_debug
 montador
+montador_debug
 *.out.asm

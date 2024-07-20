@@ -2,6 +2,9 @@
 
 #include "memory_entry.hpp"
 
+#include <vector>
+using namespace std;
+
 namespace basilar::objects {
 
 class Memory {

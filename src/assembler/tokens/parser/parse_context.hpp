@@ -4,9 +4,7 @@
 #include "../../../friend_test.hpp"
 #include <vector>
 #include <map>
-#include "../../utils/string_utils.hpp"
-
-using namespace basilar::utils;
+#include "../../../utils/string_utils.hpp"
 
 using namespace std;
 

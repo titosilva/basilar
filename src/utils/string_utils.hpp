@@ -6,8 +6,6 @@
 
 using namespace std;
 
-namespace basilar::utils {
-
 class StringUtils {
 public:
     static string lower(string str) {
@@ -57,5 +55,3 @@ public:
         return std::regex_replace(s, re, replacement);
     }
 };
-
-} // namespace basilar

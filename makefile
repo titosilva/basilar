@@ -2,6 +2,7 @@
 CC := g++
 # Compiler flags
 CFLAGS := -Wall -Wextra -pedantic -std=c++17
+DEBUG_FLAGS := -g -D DEBUG
 # Source directory
 SRC_DIR := src
 # Output directory
@@ -23,6 +24,14 @@ montador: $(OBJS) $(BUILD_DIR)/montador.o
 ligador: $(OBJS) $(BUILD_DIR)/ligador.o
 	$(CC) $(CFLAGS) $(OBJS) $(BUILD_DIR)/ligador.o -o $(LIGADOR_TARGET)
 
+montador_debug: CFLAGS += $(DEBUG_FLAGS)
+montador_debug: montador
+	mv $(MONTADOR_TARGET) $(MONTADOR_TARGET)_debug
+
+ligador_debug: CFLAGS += $(DEBUG_FLAGS)
+ligador_debug: ligador
+	mv $(LIGADOR_TARGET) $(LIGADOR_TARGET)_debug
+
 # Rule to build object files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(@D)
@@ -39,6 +48,6 @@ $(BUILD_DIR)/ligador.o: ligador.cpp
 
 # Clean rule
 clean:
-	rm -rf $(BUILD_DIR) $(MONTADOR_TARGET) $(LIGADOR_TARGET)
+	rm -rf $(BUILD_DIR) $(MONTADOR_TARGET) $(LIGADOR_TARGET) $(MONTADOR_TARGET)_debug $(LIGADOR_TARGET)_debug
 
 .PHONY: clean

@@ -34,7 +34,7 @@ void ObjectsBuilder::define_external(string name) {
 }
 
 void ObjectsBuilder::set_public(string name) {
-    __symbol_table.set_public(name);
+    __symbol_table.define_public(name);
 }
 
 void ObjectsBuilder::absolute(int value) {
@@ -148,5 +148,6 @@ string ObjectsBuilder::build_object_file() {
     }
 
     return object_file;
+}
 
 } // namespace basilar::objects

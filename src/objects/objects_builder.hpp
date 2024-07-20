@@ -6,7 +6,7 @@
 #include "symbol.hpp"
 
 #include <map>
-
+#include <string>
 using namespace std;
 
 namespace basilar::objects {
@@ -24,6 +24,6 @@ public:
 private:
     Memory __memory;
     SymbolTable __symbol_table;
-}
+};
 
 } // namespace basilar::objects
