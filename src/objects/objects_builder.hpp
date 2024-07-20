@@ -13,11 +13,19 @@ namespace basilar::objects {
 
 class ObjectsBuilder {
 public:
+    // Used during the assembly process
     void refer(string name);
     void define(string name);
     void define_external(string name);
     void set_public(string name);
+
+    // Used during the linking process
+    void add_reference(string name, int address);
+    void add_definition(string name, int address);
+
+    // Used during both assembly and linking
     void absolute(int value);
+    void relative(int value);
 
     int get_current_address();
     void write_debug_info(int address, string info);

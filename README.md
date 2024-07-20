@@ -9,10 +9,11 @@
 - Renomear namespace "basilar::tokens"
 - Renomear namespace "basilar::tokenizer"
 - Remover parâmetros desnecessários dos métodos de Preprocessor
-- VERIFICAR TODOs EM TODOS OS ARQUIVOS
-- Remover esses TODOs
 - Escrever instruções de compilação. Lembrar de adicionar um "make clean".
 - Tratar linhas que definem labels e instruções em linhas diferentes (incluindo pré-processamento)
 - Implementar expressões aritméticas em labels
 - Fazer compilação do zero e remover warnings
 - Adicionar caso de teste para extern redefinido como public
+- Ver comentários no Aprender com calma
+- VERIFICAR TODOs EM TODOS OS ARQUIVOS
+- Remover esses TODOs
