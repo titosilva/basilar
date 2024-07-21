@@ -15,6 +15,7 @@ void Memory::add_absolute(int value) {
     entry.value = value;
     entry.is_absolute = true;
     entry.line = __current_line;
+    entry.displacement = 0;
 
     __memory.push_back(entry);
 }
@@ -45,7 +46,10 @@ void Memory::rellocate(int base_address) {
     for (uint i = 0; i < __memory.size(); i++) {
         auto entry = __memory[i];
         if (!entry.is_absolute) {
-            __memory[i].value += base_address;
+            // Taking advantage of the displacement to help
+            // handling expressions, such as "label + 1"
+            __memory[i].displacement = entry.value;
+            __memory[i].value = base_address;
         }
     }
 }

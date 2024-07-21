@@ -11,13 +11,13 @@ namespace basilar::linker {
 
 void skip_spaces(string source, int* index) {
     while (source[*index] == ' ' || source[*index] == '\t') {
-        index++;
+        *index = *index + 1;
     }
 }
 
 void skip_blank_lines(string source, int* index) {
     while (source[*index] == '\n' || source[*index] == '\r') {
-        index++;
+        *index = *index + 1;
         skip_spaces(source, index);
     }
 }
@@ -29,7 +29,7 @@ bool skip_if(string source, int* index, string expected) {
         return false;
     }
 
-    index += expected.size();
+    *index += expected.size();
     return true;
 }
 
@@ -38,7 +38,7 @@ string read_line(string source, int* index) {
 
     while (source[*index] != '\n' && source[*index] != '\r') {
         line += source[*index];
-        index++;
+        *index = *index + 1;
     }
 
     return line;
@@ -50,13 +50,14 @@ string read_token(string source, int* index) {
     string token = "";
     while (source[*index] != ' ' && source[*index] != '\t' && source[*index] != '\n' && source[*index] != '\r') {
         token += source[*index];
-        index++;
+        *index = *index + 1;
     }
 
     return token;
 }
 
 optional<pair<string, int>> read_symbol(string source, int* index) {
+    auto original = *index;
     skip_spaces(source, index);
     string symbol = read_token(source, index);
 
@@ -68,7 +69,7 @@ optional<pair<string, int>> read_symbol(string source, int* index) {
     string value = read_token(source, index);
 
     if (value.empty()) {
-        index -= symbol.size();
+        *index = original;
         return nullopt;
     }
 

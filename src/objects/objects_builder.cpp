@@ -54,7 +54,7 @@ void ObjectsBuilder::absolute(int value) {
 }
 
 void ObjectsBuilder::relative(int value) {
-    __memory.add_relative(value);
+    __memory.add_relative(value, 0);
 }
 
 void ObjectsBuilder::rellocate(int base_address) {
@@ -126,6 +126,9 @@ string ObjectsBuilder::build_debug_code() {
         }
 
         debug_file += to_string(entry.value);
+        if (entry.displacement > 0) {
+            debug_file += "+" + to_string(entry.displacement);
+        }
         
         if (entry.is_absolute) {
             debug_file += "a";
@@ -212,7 +215,7 @@ string ObjectsBuilder::build_object_code() {
     // Add the memory values
     for (int i = 0; i < __memory.get_current_address(); i++) {        
         auto entry = __memory.read(i);
-        object_file += to_string(entry.value);
+        object_file += to_string(entry.value + entry.displacement);
         object_file += " ";
     }
 

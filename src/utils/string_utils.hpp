@@ -18,11 +18,17 @@ public:
 
         auto bstr = string(str);
         size_t pos = 0;
-        do {
+        while (pos != string::npos) {
             bstr = bstr.substr(pos);
             pos = bstr.find(to_split);
+
+            if (pos == 0) {
+                bstr = bstr.substr(to_split.size());
+                pos = bstr.find(to_split);
+            }
+
             r.push_back(bstr.substr(0, pos));
-        } while (pos != string::npos);
+        }
 
         return r;
     }

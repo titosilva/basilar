@@ -2,6 +2,8 @@
 #include "opcodes.hpp"
 #include "../../utils/logger.hpp"
 #include "../../utils/string_utils.hpp"
+#include "../../exceptions/lexycal_exception.hpp"
+using namespace basilar::exceptions;
 
 #include <utility>
 #include <string>
@@ -16,7 +18,9 @@ pair<string, int> parse_operand(string operand) {
 
     auto parts = StringUtils::split(operand, "+");
     int displacement = 0;
-    StringUtils::try_parse_int(parts[1], &displacement);
+    if (!StringUtils::try_parse_int(parts[1], &displacement)) {
+        throw lexycal_exception("Bad integer " + parts[1]);
+    }
 
     return {parts[0], displacement};
 }
@@ -42,8 +46,8 @@ void LineHandler::handle_instruction(string label, string instruction, vector<st
     }
 
     for (auto operand : operands) {
-        auto [label, displacement] = parse_operand(operand);
-        __objects_builder.refer(label, displacement);
+        auto [name, displacement] = parse_operand(operand);
+        __objects_builder.refer(name, displacement);
         __objects_builder.append_debug_info(operand);
     }
 }
@@ -77,12 +81,13 @@ void LineHandler::handle_directive(string label, string directive, vector<string
         // TODO: support hexadecimals
         uint size = operands.size() > 0 ? stoi(operands[0]) : 1;
 
-        for (uint i = 0; i < size; i++) {
-            __objects_builder.absolute(0);
-        }
-
+        __objects_builder.absolute(0);
         if (label != "") {
             __objects_builder.append_debug_info("def:" + label);
+        }
+
+        for (uint i = 1; i < size; i++) {
+            __objects_builder.absolute(0);
         }
 
         return;

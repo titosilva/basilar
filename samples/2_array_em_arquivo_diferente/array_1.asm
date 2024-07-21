@@ -1,0 +1,22 @@
+MOD1:   begin
+gasto:  extern
+saldo:  extern
+        load saldo
+        sub gasto
+        sub gasto +     1
+        sub gasto         + 2
+        sub gasto+3
+        store saldo
+        jmpp pos
+        jmpn neg
+
+pos:    output saldo
+        jmp finish
+
+neg:    output saldo
+        jmp finish
+
+    finish:             stop
+zero:                   const 0
+public mod1
+end

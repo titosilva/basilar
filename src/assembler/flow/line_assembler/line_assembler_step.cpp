@@ -21,20 +21,23 @@ optional<ParseContext> LineAssemblerStep::run(ParseContext ctx, LineSource*) {
     // TODO: support address expressions (eg. label + 1)
     // to be used with spaces
 
+    int idx = 0;
     string label;
     if (ctx.has_annotation("has_label")) {
         auto token = ctx.get_token_with_type(ParserTypeOf(LabelDef));
         // Remove the colon
         label = token->value.substr(0, token->value.size() - 1);
+        idx++;
     }
     
     if (ctx.has_annotation("instruction_call")) {
         auto instruction = ctx.get_annotation("instruction_call");
-        auto operands = vector<string>();
+        idx++;
 
-        // TODO: use annotations to get the tokens
-        for (auto token : ctx.get_tokens_with_type(ParserTypeOf(Label))) {
-            operands.push_back(token.value);
+        auto operands = vector<string>();
+        auto tokens = ctx.get_tokens();
+        for (uint i = idx; i < tokens.size(); i++) {
+            operands.push_back(tokens[i].value);
         }
 
         __line_handler.handle_instruction(label, instruction, operands);
@@ -42,11 +45,7 @@ optional<ParseContext> LineAssemblerStep::run(ParseContext ctx, LineSource*) {
 
     if (ctx.has_annotation("directive_call")) {
         auto directive = ctx.get_annotation("directive_call");
-
-        int idx = 1;
-        if (ctx.has_annotation("has_label")) {
-            idx++;
-        }
+        idx++;
 
         auto operands = vector<string>();
         auto tokens = ctx.get_tokens();

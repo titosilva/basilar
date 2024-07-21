@@ -1,0 +1,30 @@
+
+end 0. 9a{copy}	17r{zero}	26r{saldo}
+end 3. 9a{copy}	19r{cinco}	27+3r{gasto+0x3}
+end 6. 9a{copy}	20r{seis}	27+1r{gasto+0x1}
+end 9. 9a{copy}	21r{sete}	27+2r{gasto+0x2}
+end 12. 9a{copy}	18r{tres}	27r{gasto+0x0}
+end 15. 5a{jmp}	24r{other}
+end 17. 0a{def:zero}
+end 18. 3a{def:tres}
+end 19. 5a{def:cinco}
+end 20. 6a{def:seis}
+end 21. 7a{def:sete}
+end 22. 21a{def:soma}
+end 23. 100a{def:mega}
+end 24. 5a{jmp|def:other}	0r{mod1}
+end 26. 0a{def:saldo}
+end 27. 0a{def:gasto}	0a	0a	0a
+
+cinco def: 19 pendings: 4 
+gasto def: 27(pub) pendings: 5 8 11 14 
+mega def: 23 pendings: 
+mod1 def: 0(ext) pendings: 25 
+mod2 def: 0 pendings: 
+other def: 24 pendings: 16 
+saldo def: 26(pub) pendings: 2 
+seis def: 20 pendings: 7 
+sete def: 21 pendings: 10 
+soma def: 22 pendings: 
+tres def: 18 pendings: 13 
+zero def: 17 pendings: 1 
