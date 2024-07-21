@@ -64,12 +64,12 @@ optional<ParseContext> Preprocessor::__handle_if(ParseContext ctx, LineSource* s
         }
 
         try {
-            conditional_value = stoi(def->second);
+            conditional_value = StringUtils::parse_int(def->second);
         } catch (...) {
             conditional_value = def->second.length() > 0 ? 1 : 0;
         }
     } else if(number.has_value()) {
-        conditional_value = stoi(number.value().value);
+        conditional_value = StringUtils::parse_int(number.value().value);
     } else {
         throw runtime_error("Expected label or number in conditional");
     }

@@ -5,7 +5,7 @@
     * Obs.: quando for label externa, escrever o tanto que é somado para auxiliar na resolução do ligador
 - [ OK ] Tratar linhas que definem labels e instruções em linhas diferentes (incluindo pré-processamento)
 - [ OK ] Adequar as entradas do programa à especificação
-- Adicionar verificação de labels indefinidas
+- [ TEST ] Adicionar verificação de labels indefinidas
 - Implementar suporte a hexadecimal onde necessário
 - Melhorar exibição de casos de erro
 - Implementar casos de erro da especificação

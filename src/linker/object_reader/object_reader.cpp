@@ -1,5 +1,6 @@
 #include "object_reader.hpp"
 #include "../../utils/logger.hpp"
+#include "../../utils/string_utils.hpp"
 
 #include <optional>
 #include <string>
@@ -73,7 +74,7 @@ optional<pair<string, int>> read_symbol(string source, int* index) {
         return nullopt;
     }
 
-    return make_pair(symbol, stoi(value));
+    return make_pair(symbol, StringUtils::parse_int(value));
 }
 
 ObjectsBuilder ObjectsReader::read() {
@@ -138,7 +139,7 @@ ObjectsBuilder ObjectsReader::read() {
 
         skip_spaces(__source, &__current_index);
         string valueStr = read_token(__source, &__current_index);
-        auto value = stoi(valueStr);
+        auto value = StringUtils::parse_int(valueStr);
 
         if (relatives[__objects_builder.get_current_address()]) {
             __objects_builder.relative(value);

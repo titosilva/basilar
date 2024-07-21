@@ -68,7 +68,7 @@ void LineHandler::handle_directive(string label, string directive, vector<string
 
     if (directive == "const") {
         auto operand = operands[0];
-        __objects_builder.absolute(stoi(operand));
+        __objects_builder.absolute(StringUtils::parse_int(operand));
 
         if (label != "") {
             __objects_builder.append_debug_info("def:" + label);
@@ -79,7 +79,7 @@ void LineHandler::handle_directive(string label, string directive, vector<string
 
     if (directive == "space") {
         // TODO: support hexadecimals
-        uint size = operands.size() > 0 ? stoi(operands[0]) : 1;
+        uint size = operands.size() > 0 ? StringUtils::parse_int(operands[0]) : 1;
 
         __objects_builder.absolute(0);
         if (label != "") {

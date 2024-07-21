@@ -69,6 +69,15 @@ public:
         }
     }
 
+    static int parse_int(string str, int base) {
+        int out;
+        if (!try_parse_int(str, &out, base)) {
+            throw invalid_argument("Cannot parse int from " + str);
+        }
+
+        return out;
+    }
+
     static bool try_parse_int(string str, int* out) {
         if (try_parse_int(str, out, 10)) {
             return true;
@@ -83,6 +92,15 @@ public:
         }
 
         return false;
+    }
+
+    static int parse_int(string str) {
+        int out;
+        if (!try_parse_int(str, &out)) {
+            throw lexycal_exception("Cannot parse int from " + str);
+        }
+
+        return out;
     }
 
     // Source: https://stackoverflow.com/questions/16749069/c-split-string-by-regex
