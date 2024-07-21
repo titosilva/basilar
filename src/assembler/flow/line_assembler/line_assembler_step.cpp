@@ -16,9 +16,6 @@ void write_to_file(string file_dest, string content) {
 }
 
 optional<ParseContext> LineAssemblerStep::run(ParseContext ctx, LineSource*) {
-    // TODO: support address expressions (eg. label + 1)
-    // to be used with spaces
-
     int idx = 0;
     string label;
     if (ctx.has_annotation("has_label")) {
@@ -57,7 +54,6 @@ optional<ParseContext> LineAssemblerStep::run(ParseContext ctx, LineSource*) {
     __line_handler.next_line();
 
     return nullopt;
-    // TODO: handle undefined references
 }
 
 void LineAssemblerStep::write_object_file() {

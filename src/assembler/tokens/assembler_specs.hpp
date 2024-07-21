@@ -9,14 +9,14 @@ namespace basilar::tokens {
         DefParser(name##Call, \
             #name >> Args(args, "Invalid arguments for "#name" instruction") \
         ) Then Note("instruction_call", #name) \
-        Else Forbid(OptSpace >> #name >> SpaceOrClose, "Expected arguments for "#name" instruction") Then Fail \
+        Else Forbid(OpsSpace >> #name >> OptSpace, "Invalid number of arguments for "#name" instruction") Then Fail \
         EndDef
 
     #define DefineInstructionWithoutArgs(name) \
         DefParser(name##Call, \
             #name >> EndLine \
         ) Then Note("instruction_call", #name) \
-        Else Forbid(OptSpace >> #name >> SpaceOrClose, "Unexpected arguments for "#name" instruction") Then Fail \
+        Else Forbid(OpsSpace >> #name >> OptSpace, "Invalid number of arguments for "#name" instruction") Then Fail \
         EndDef
 
     DefineInstruction(add, Expression)
@@ -27,7 +27,6 @@ namespace basilar::tokens {
     DefineInstruction(jmpn, Expression)
     DefineInstruction(jmpp, Expression)
     DefineInstruction(jmpz, Expression)
-    // TODO: check if copy is correct
     DefineInstruction(copy, Expression >> Hidden(Literal(",")) >> Expression)
     DefineInstruction(load, Expression)
     DefineInstruction(store, Expression)
@@ -61,14 +60,14 @@ namespace basilar::tokens {
     DefParser(spaceDirectiveCall, 
         LabelDef >> (
             ("space" >> OptSpace >> Close)
-            | ("space" >> Args(Integer, "Expected integer after space directive"))
+            | ("space" >> Args(Integer, "Expected single integer after space directive"))
         )
     ) Then Note("directive_call", "space")
     Else Forbid(OptSpace >> "space", "Expected label definition in space directive") Then Fail
     EndDef
 
     DefParser(constDirectiveCall, 
-        LabelDef >> "const" >> Args(Integer, "Expected number after const directive")
+        LabelDef >> "const" >> Args(Integer, "Expected single integer after const directive")
     ) Then Note("directive_call", "const")
     Else Forbid(OptSpace >> "const", "Expected label definition in const directive") Then Fail
     EndDef
@@ -92,9 +91,9 @@ namespace basilar::tokens {
     EndDef
 
     DefParser(publicDirectiveCall, 
-        Optional(LabelDef) >> "public" >> Args(Label, "Expected label after begin directive")
+        Optional(LabelDef) >> "public" >> Args(Label, "Expected label after public directive")
     ) Then Note("directive_call", "public")
-    Else Forbid(OptSpace >> "public", "Invalid begin directive") Then Fail
+    Else Forbid(OptSpace >> "public", "Invalid public directive") Then Fail
     EndDef
 
     DefLine(DirectiveLine, 
@@ -108,7 +107,7 @@ namespace basilar::tokens {
     EndDef
 
     Def AssemblerParser As InstructionLine | DirectiveLine
-    Else Forbid(EndLine, "Expected instruction or directive") Then Fail
+    Else Forbid(EndLine, "Unknown instruction or directive") Then Fail
     EndDef
 
 } // namespace basilar::tokens

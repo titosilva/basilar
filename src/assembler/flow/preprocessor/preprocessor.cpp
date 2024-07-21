@@ -1,6 +1,8 @@
 #include "preprocessor.hpp"
 #include "../../tokens/common_specs.hpp"
 #include "../../../utils/string_utils.hpp"
+#include "../../../exceptions/exceptions.hpp"
+using namespace basilar::exceptions;
 
 using namespace std;
 
@@ -9,7 +11,6 @@ using namespace basilar::tokens;
 namespace basilar::assembler::flow {
 
 optional<ParseContext> Preprocessor::run(ParseContext ctx, LineSource* source) {
-    // TODO: throw semantic error on each error
     if (ctx.has_annotation("is_only_label")) {        
         auto labeldef = ctx.get_token_with_type(ParserTypeOf(LabelDef));
         source->set_prefix(labeldef.value().value);
@@ -25,7 +26,7 @@ optional<ParseContext> Preprocessor::run(ParseContext ctx, LineSource* source) {
     }
 
     if (ctx.get_tokens().size() > 0) {
-        throw runtime_error("Unexpected tokens in preprocessor");
+        throw semantic_exception("Unexpected tokens in preprocessor");
     }
 
     auto line = ctx.get_remaining_input();
@@ -42,7 +43,7 @@ optional<ParseContext> Preprocessor::__handle_equ(ParseContext ctx, LineSource*)
     auto value = ctx.get_token_with_type("notwhitespace");
 
     if (!labeldef.has_value() || !value.has_value()) {
-        throw runtime_error("Expected label definition and value");
+        throw semantic_exception("Expected label definition and value");
     }
 
     auto label = StringUtils::replace(labeldef.value().value, ":", "");
@@ -60,7 +61,7 @@ optional<ParseContext> Preprocessor::__handle_if(ParseContext ctx, LineSource* s
         auto label = StringUtils::lower(label_name.value().value);
         auto def = __definitions.find(label);
         if (def == __definitions.end()) {
-            throw runtime_error("Undefined label in conditional");
+            throw semantic_exception("Undefined label in conditional");
         }
 
         try {
@@ -71,7 +72,7 @@ optional<ParseContext> Preprocessor::__handle_if(ParseContext ctx, LineSource* s
     } else if(number.has_value()) {
         conditional_value = StringUtils::parse_int(number.value().value);
     } else {
-        throw runtime_error("Expected label or number in conditional");
+        throw semantic_exception("Expected label or number in conditional");
     }
 
     if (conditional_value == 0) {

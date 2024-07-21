@@ -25,8 +25,6 @@ pair<string, int> parse_operand(string operand) {
     return {parts[0], displacement};
 }
 
-// TODO: add support to expressions over labels
-
 void LineHandler::handle_label(string operand) {
     LOG_DEBUG("Handling label definition: " + operand);
     __objects_builder.define(operand);
@@ -78,7 +76,6 @@ void LineHandler::handle_directive(string label, string directive, vector<string
     }
 
     if (directive == "space") {
-        // TODO: support hexadecimals
         uint size = operands.size() > 0 ? StringUtils::parse_int(operands[0]) : 1;
 
         __objects_builder.absolute(0);

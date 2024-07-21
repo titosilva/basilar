@@ -31,7 +31,6 @@ namespace basilar::tokens {
 
     Def Expression As LabelWithDisplacement | Label;
 
-    // TODO: should LabelDef hide the colon?
     DefType(LabelDef, Label >> ":") Then Note("has_label", "true")
     Then Forbid(RegexParser(R"(.*:)"), "Double label definition")
     Else Forbid(RegexParser(R"(.*:)"), "Malformed label definition") Then Fail

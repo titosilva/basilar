@@ -43,7 +43,6 @@ void SymbolTable::define_public(string name) {
         __symbols[name] = __default_symbol(name);
     }
 
-    // TODO: move this to other class
     if (__symbols[name].is_external) {
         throw semantic_exception("Cannot set public an external symbol: " + name);
     }
