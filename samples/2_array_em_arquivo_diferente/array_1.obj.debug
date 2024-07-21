@@ -1,0 +1,25 @@
+
+end 0. 10a{load}	0r{saldo}
+end 2. 2a{sub}	0r{gasto}
+end 4. 2a{sub}	0+1r{gasto+1}
+end 6. 2a{sub}	0+2r{gasto+2}
+end 8. 2a{sub}	0+3r{gasto+3}
+end 10. 11a{store}	0r{saldo}
+end 12. 7a{jmpp}	20r{pos}
+end 14. 6a{jmpn}	24r{neg}
+end 16. 13a{output}	0r{saldo}
+end 18. 5a{jmp}	28r{finish}
+end 20. 13a{output|def:pos}	0r{saldo}
+end 22. 5a{jmp}	28r{finish}
+end 24. 13a{output|def:neg}	0r{saldo}
+end 26. 5a{jmp}	28r{finish}
+end 28. 14a{stop|def:finish}
+end 29. 0a{def:zero}
+
+finish def: 28 pendings: 19 23 27 
+gasto def: 0(ext) pendings: 3 5 7 9 
+mod1 def: 0(pub) pendings: 
+neg def: 24 pendings: 15 
+pos def: 20 pendings: 13 
+saldo def: 0(ext) pendings: 1 11 17 21 25 
+zero def: 29 pendings: 

@@ -1,6 +1,6 @@
-to_neg:       equ 1
+to_neg:       equ 0
 to_pos:       equ 0
-to_zero:      equ 0
+to_zero:      equ 1
 gasto_size:     equ 4
 
         public saldo

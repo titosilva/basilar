@@ -1,0 +1,21 @@
+public saldo
+public gasto
+mod2: begin
+copy cinco,gasto + 0x3
+copy seis,gasto + 0x1
+copy sete,gasto + 0x2
+copy soma,saldo
+copy tres,gasto + 0x0
+jmp other
+zero: const 0
+tres: const 3
+cinco: const 5
+seis: const 6
+sete:const 7
+soma:const 21
+mega:const 100
+other: jmp mod1
+saldo: space
+gasto: space 4
+mod1: extern
+end

@@ -6,6 +6,7 @@ namespace basilar::assembler::flow {
 
 class AssemblerFlow {
 public:
+    AssemblerFlow() : __source(nullptr) {}
     AssemblerFlow(LineSource* source) : __source(source) {}
 
     AssemblerFlow add_step(AssemblerStep* step);

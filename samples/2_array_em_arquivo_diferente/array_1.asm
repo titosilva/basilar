@@ -9,6 +9,8 @@ saldo:  extern
         store saldo
         jmpp pos
         jmpn neg
+        output saldo
+        jmp finish
 
 pos:    output saldo
         jmp finish
