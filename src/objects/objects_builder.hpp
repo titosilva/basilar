@@ -43,4 +43,6 @@ private:
     SymbolTable __symbol_table;
 };
 
+void debug_log_symbol_table(SymbolTable& symbol_table);
+
 } // namespace basilar::objects

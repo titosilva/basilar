@@ -1,0 +1,12 @@
+
+end 0. 1a{add}	0r{x}
+end 2. 1a{add}	0r{y}
+end 4. 11a{store}	9r{z}
+end 6. 13a{output}	9r{z}
+end 8. 14a{stop}
+end 9. 0a{def:z}
+
+mod_out def: 0(pub) pendings: 
+x def: 0(ext) pendings: 1 
+y def: 0(ext) pendings: 3 
+z def: 9(pub) pendings: 5 7 

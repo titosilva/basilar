@@ -1,5 +1,6 @@
 #include "objects_builder.hpp"
 #include "../exceptions/semantic_exception.hpp"
+#include "../utils/logger.hpp"
 
 using namespace basilar::exceptions;
 
@@ -64,10 +65,11 @@ void ObjectsBuilder::rellocate(int base_address) {
 void ObjectsBuilder::link(ObjectsBuilder& other) {
     auto base_address = __memory.get_current_address();
 
-    other.__memory.rellocate(base_address);
-    __memory.merge(other.__memory);
+    debug_log_symbol_table(other.__symbol_table);
+    other.rellocate(base_address);
+    debug_log_symbol_table(other.__symbol_table);
 
-    other.__symbol_table.rellocate(base_address);
+    __memory.merge(other.__memory);
     __symbol_table.merge(other.__symbol_table);
 
     resolve();
@@ -215,6 +217,33 @@ string ObjectsBuilder::build_object_code() {
     }
 
     return object_file;
+}
+
+void debug_log_symbol_table(SymbolTable& symbol_table) {
+    #ifndef DEBUG
+    return;
+    #endif
+
+    LOG_DEBUG("Symbol table:");
+    for (auto [name, entry] : symbol_table.get_table()) {
+        string debug_info = name + " def: " + to_string(entry.address);
+
+        if (entry.is_public) {
+            debug_info += "(pub)";
+        }
+
+        if (entry.is_external) {
+            debug_info += "(ext)";
+        }
+
+        debug_info += " pendings: ";
+
+        for (auto reference : entry.pending_references) {
+            debug_info += to_string(reference) + " ";
+        }
+
+        LOG_DEBUG(debug_info);
+    }
 }
 
 } // namespace basilar::objects

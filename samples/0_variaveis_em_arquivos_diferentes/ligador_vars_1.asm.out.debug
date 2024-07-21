@@ -1,0 +1,10 @@
+
+end 0. 1a{add}	0r{x}
+end 2. 1a{add}	0r{y}
+end 4. 11a{store}	7r{z}
+end 6. 14a{stop}
+end 7. 0a{def:z}
+
+x def: 0(ext) pendings: 1 
+y def: 0(ext) pendings: 3 
+z def: 7(pub) pendings: 5 

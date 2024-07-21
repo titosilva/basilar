@@ -65,6 +65,10 @@ int SymbolTable::refer(string name, int address) {
 
 void SymbolTable::rellocate(int base_address) {
     for (auto& [name, symbol] : __symbols) {
+        for (auto& reference : symbol.pending_references) {
+            reference += base_address;
+        }
+        
         if (symbol.address == -1) {
             continue;
         }
@@ -74,9 +78,6 @@ void SymbolTable::rellocate(int base_address) {
         }
 
         symbol.address += base_address;
-        for (auto& reference : symbol.pending_references) {
-            reference += base_address;
-        }
     }
 }
 

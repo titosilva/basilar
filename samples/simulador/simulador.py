@@ -29,6 +29,7 @@ if __name__ == "__main__":
     acc = 0
     while pc < len(program):
         opcode = program[pc]
+        print(">> PC:", pc, "Opcode:", opcode, "ACC:", acc)
 
         if opcode == ADD:
             operand1 = program[pc + 1]
@@ -81,11 +82,13 @@ if __name__ == "__main__":
             program[operand1] = acc
             pc += 2
         elif opcode == INPUT:
-            acc = int(input("Input: "))
-            pc += 1
+            operand1 = program[pc + 1]
+            program[operand1] = int(input("Input: "))
+            pc += 2
         elif opcode == OUTPUT:
-            print("Output:", acc)
-            pc += 1
+            operand1 = program[pc + 1]
+            print("Output:", program[operand1])
+            pc += 2
         elif opcode == STOP:
             break
         else:
