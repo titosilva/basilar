@@ -4,6 +4,7 @@
 using namespace std;
 using namespace basilar::tokens;
 using namespace basilar::assembler::tokens::parser;
+using namespace basilar::exceptions;
 
 DefineGlobalTestSuiteFor(PreprocessingSpecs)
     DefineGlobalTest(Label__ShouldParseSequencesWithLettersNumbersAndUnderscores) {

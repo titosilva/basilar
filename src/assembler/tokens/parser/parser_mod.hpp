@@ -1,7 +1,8 @@
 #pragma once
 
 #include "token_parser.hpp"
-#include "parsing_exception.hpp"
+#include "../../../exceptions/parsing_exception.hpp"
+using namespace basilar::exceptions;
 
 #include <functional>
 

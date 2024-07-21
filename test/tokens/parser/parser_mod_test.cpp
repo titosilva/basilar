@@ -2,6 +2,7 @@
 #include "../../test_suite.hpp"
 
 using namespace basilar::assembler::tokens::parser;
+using namespace basilar::exceptions;
 
 DefineGlobalTestSuiteFor(ParserMods)
 

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace basilar::assembler::tokens::parser {
+namespace basilar::exceptions {
 
 class ParsingException : public exception {
 public:
