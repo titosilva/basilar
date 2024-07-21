@@ -1,8 +1,6 @@
 #include "assembler_flow.hpp"
 #include "../../utils/logger.hpp"
 
-// TODO: Remove this
-#include <iostream>
 using namespace std;
 
 namespace basilar::assembler::flow {
