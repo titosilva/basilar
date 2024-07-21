@@ -6,9 +6,9 @@ using namespace basilar::exceptions;
 
 namespace basilar::objects {
 
-void ObjectsBuilder::refer(string name) {
+void ObjectsBuilder::refer(string name, int displacement) {
     auto r = __symbol_table.refer(name, __memory.get_current_address());
-    __memory.add_relative(r);
+    __memory.add_relative(r, displacement);
 }
 
 void ObjectsBuilder::define(string name) {

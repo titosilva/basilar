@@ -26,6 +26,25 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "add");
     }
 
+    DefineGlobalTest(addCall__ShouldParse__WhenArgsAreExpression) {
+        auto parser = addCall;
+        auto result = parser.parse("add label + 2");
+
+        ASSERT_TRUE(result.has_value());
+        ASSERT_EQ(result.value().get_tokens().size(), 2)
+            << "Tokens size: " << result.value().get_tokens().size()
+            << "; Remaining input: " << result.value().get_remaining_input()
+            << "; Token 1: " << result.value().get_tokens()[0].value;
+
+        ASSERT_EQ(result.value().get_tokens()[0].type, "literal");
+        ASSERT_EQ(result.value().get_tokens()[0].value, "add");
+        ASSERT_EQ(result.value().get_tokens()[1].value, "label+2");
+        ASSERT_EQ(result.value().get_remaining_input(), "");
+
+        ASSERT_TRUE(result.value().has_annotation("instruction_call"));
+        ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "add");
+    }
+
     DefineGlobalTest(addCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel) {
         auto parser = addCall;
         ASSERT_THROW(parser.parse("add"), ParsingException);
@@ -443,6 +462,7 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
 EndGlobalTestSuite
 
 RunGlobalTest(AssemblerSpecs, addCall__ShouldParse__WhenArgsAreCorrect)
+RunGlobalTest(AssemblerSpecs, addCall__ShouldParse__WhenArgsAreExpression)
 RunGlobalTest(AssemblerSpecs, addCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)
 RunGlobalTest(AssemblerSpecs, subCall__ShouldParse__WhenArgsAreCorrect)
 RunGlobalTest(AssemblerSpecs, subCall__ShouldThrow__WhenInstructionIsNotFollowedByLabel)

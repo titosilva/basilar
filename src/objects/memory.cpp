@@ -19,11 +19,12 @@ void Memory::add_absolute(int value) {
     __memory.push_back(entry);
 }
 
-void Memory::add_relative(int value) {
+void Memory::add_relative(int value, int displacement) {
     MemoryEntry entry;
     entry.value = value;
     entry.is_absolute = false;
     entry.line = __current_line;
+    entry.displacement = displacement;
 
     __memory.push_back(entry);
 }

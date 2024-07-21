@@ -19,20 +19,20 @@ namespace basilar::tokens {
         Else Forbid(OptSpace >> #name >> SpaceOrClose, "Unexpected arguments for "#name" instruction") Then Fail \
         EndDef
 
-    DefineInstruction(add, Label)
-    DefineInstruction(sub, Label)
-    DefineInstruction(mul, Label)
-    DefineInstruction(div, Label)
-    DefineInstruction(jmp, Label)
-    DefineInstruction(jmpn, Label)
-    DefineInstruction(jmpp, Label)
-    DefineInstruction(jmpz, Label)
+    DefineInstruction(add, Expression)
+    DefineInstruction(sub, Expression)
+    DefineInstruction(mul, Expression)
+    DefineInstruction(div, Expression)
+    DefineInstruction(jmp, Expression)
+    DefineInstruction(jmpn, Expression)
+    DefineInstruction(jmpp, Expression)
+    DefineInstruction(jmpz, Expression)
     // TODO: check if copy is correct
-    DefineInstruction(copy, Label >> Hidden(Literal(",")) >> Label)
-    DefineInstruction(load, Label)
-    DefineInstruction(store, Label)
-    DefineInstruction(input, Label)
-    DefineInstruction(output, Label)
+    DefineInstruction(copy, Expression >> Hidden(Literal(",")) >> Expression)
+    DefineInstruction(load, Expression)
+    DefineInstruction(store, Expression)
+    DefineInstruction(input, Expression)
+    DefineInstruction(output, Expression)
     DefineInstructionWithoutArgs(stop)
 
     DefParser(InstructionCall,
@@ -68,22 +68,19 @@ namespace basilar::tokens {
     EndDef
 
     DefParser(constDirectiveCall, 
-        LabelDef >>
-        "const" >> Args(Integer, "Expected number after const directive")
+        LabelDef >> "const" >> Args(Integer, "Expected number after const directive")
     ) Then Note("directive_call", "const")
     Else Forbid(OptSpace >> "const", "Expected label definition in const directive") Then Fail
     EndDef
 
     DefParser(externDirectiveCall, 
-        LabelDef >>
-        "extern" >> EndLine
+        LabelDef >> "extern" >> EndLine
     ) Then Note("directive_call", "extern")
     Else Forbid(OptSpace >> "extern", "Expected label definition in extern directive") Then Fail
     EndDef
 
     DefParser(beginDirectiveCall, 
-        Optional(LabelDef) >>
-        "begin" >> EndLine
+        Optional(LabelDef) >> "begin" >> EndLine
     ) Then Note("directive_call", "begin")
     Else Forbid(OptSpace >> "begin", "Invalid begin directive") Then Fail
     EndDef
@@ -95,8 +92,7 @@ namespace basilar::tokens {
     EndDef
 
     DefParser(publicDirectiveCall, 
-        Optional(LabelDef) >>
-        "public" >> Args(Label, "Expected label after begin directive")
+        Optional(LabelDef) >> "public" >> Args(Label, "Expected label after begin directive")
     ) Then Note("directive_call", "public")
     Else Forbid(OptSpace >> "public", "Invalid begin directive") Then Fail
     EndDef

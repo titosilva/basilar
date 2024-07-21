@@ -14,7 +14,7 @@ namespace basilar::objects {
 class ObjectsBuilder {
 public:
     // Used during the assembly process
-    void refer(string name);
+    void refer(string name, int displacement = 0);
     void define(string name);
     void define_external(string name);
     void set_public(string name);

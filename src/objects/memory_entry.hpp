@@ -14,6 +14,7 @@ public:
     // Will not be used by the linker
     string debug_info;
     int line;
+    int displacement;
 };
 
 }

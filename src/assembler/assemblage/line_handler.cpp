@@ -1,8 +1,25 @@
 #include "line_handler.hpp"
 #include "opcodes.hpp"
 #include "../../utils/logger.hpp"
+#include "../../utils/string_utils.hpp"
+
+#include <utility>
+#include <string>
+using namespace std;
 
 namespace basilar::assembler::assemblage {
+
+pair<string, int> parse_operand(string operand) {
+    if (!StringUtils::has(operand, "+")) {
+        return {operand, 0};
+    }
+
+    auto parts = StringUtils::split(operand, "+");
+    int displacement = 0;
+    StringUtils::try_parse_int(parts[1], &displacement);
+
+    return {parts[0], displacement};
+}
 
 // TODO: add support to expressions over labels
 
@@ -25,7 +42,8 @@ void LineHandler::handle_instruction(string label, string instruction, vector<st
     }
 
     for (auto operand : operands) {
-        __objects_builder.refer(operand);
+        auto [label, displacement] = parse_operand(operand);
+        __objects_builder.refer(label, displacement);
         __objects_builder.append_debug_info(operand);
     }
 }

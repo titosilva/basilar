@@ -12,7 +12,7 @@ public:
     MemoryEntry read(int address);
     void write(int address, int value);
     void add_absolute(int value);
-    void add_relative(int value);
+    void add_relative(int value, int displacement = 0);
 
     void set_absolute(int address);
     void set_relative(int address);
