@@ -12,6 +12,12 @@ namespace basilar::assembler::flow {
 
 optional<ParseContext> Preprocessor::run(ParseContext ctx, LineSource* source) {
     // TODO: throw semantic error on each error
+    if (ctx.has_annotation("is_only_label")) {        
+        auto labeldef = ctx.get_token_with_type(ParserTypeOf(LabelDef));
+        source->set_prefix(labeldef.value().value);
+        return nullopt;
+    }
+
     if (ctx.has_annotation("is_equ")) {
         return __handle_equ(ctx, source);
     }

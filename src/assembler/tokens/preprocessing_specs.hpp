@@ -5,6 +5,11 @@
 using namespace basilar::assembler::tokens::parser;
 
 namespace basilar::tokens {
+    DefParser(OnlyLabelLine, 
+        OptSpace >> LabelDef >> OptSpace >> Close
+    ) Then Note("is_only_label", "true")
+    EndDef
+
     DefLine(EquDirectiveLine, 
         LabelDef 
         >> "equ"
@@ -18,5 +23,5 @@ namespace basilar::tokens {
     ) Then Note("is_if", "true")
     EndDef
 
-    Def PreprocessingParser As EquDirectiveLine | IfDirectiveLine;
+    Def PreprocessingParser As OnlyLabelLine | EquDirectiveLine | IfDirectiveLine;
 } // namespace basilar::tokens

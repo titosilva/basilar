@@ -35,6 +35,7 @@ public:
 
     bool next_line() override;
     ParseContext read_current_line() override;
+    void set_prefix(std::string prefix) override;
 
     AllowInternalTestFor(LineReader);
 
@@ -46,6 +47,7 @@ private:
     unsigned long __current_index;
     std::vector<Formatter> __line_formatters;
     std::string __line;
+    std::string __prefix;
 };
 
 }  // namespace basilar::tokenizer

@@ -68,7 +68,17 @@ std::string LineReader::__read_next_line() {
         line = this->__format(line);
     } while (line.empty() && this->__current_index < r.size());
 
+    if (__prefix.empty() || line.empty()) {
+        return line;
+    }
+
+    line = this->__prefix + line;
+    this->__prefix = "";
     return line;
+}
+
+void LineReader::set_prefix(string prefix) {
+    __prefix = prefix;
 }
 
 ParseContext LineReader::read_current_line() {

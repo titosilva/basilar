@@ -27,9 +27,16 @@ zero:           const 0
 tres:   const 3
 cinco:  const 5
 seis:   const 6
-sete:   const 7
-soma:  const 21
-mega:                   const       100
+sete:   
+
+
+                        const 7            
+soma:  
+        const 21
+mega:                
+
+
+const       100
 
 other: jmp mod1
 saldo: SpAcE

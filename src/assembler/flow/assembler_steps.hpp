@@ -13,6 +13,7 @@ class LineSource {
 public:
     virtual ParseContext read_current_line() = 0;
     virtual bool next_line() = 0;
+    virtual void set_prefix(string prefix) = 0;
 };
 
 class AssemblerStep {
