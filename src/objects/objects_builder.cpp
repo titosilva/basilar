@@ -222,6 +222,10 @@ string ObjectsBuilder::build_object_code() {
     return object_file;
 }
 
+void ObjectsBuilder::check_consistency() {
+    __symbol_table.check_consistency();
+}
+
 void debug_log_symbol_table(SymbolTable& symbol_table) {
     #ifndef DEBUG
     return;

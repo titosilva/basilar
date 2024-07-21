@@ -113,4 +113,8 @@ void LineHandler::next_line() {
     __objects_builder.next_line();
 }
 
+void LineHandler::check_consistency() {
+    __objects_builder.check_consistency();
+}
+
 } // namespace basilar::assembler::assemblage

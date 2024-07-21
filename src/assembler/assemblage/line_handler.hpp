@@ -16,6 +16,7 @@ class LineHandler {
     string build_debug_code();
 
     void next_line();
+    void check_consistency();
 private:
     ObjectsBuilder __objects_builder;
 };

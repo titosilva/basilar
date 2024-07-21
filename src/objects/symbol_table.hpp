@@ -22,6 +22,8 @@ public:
 
     list<int> get_pending_references(string name);
     map<string, Symbol> get_table();
+
+    void check_consistency();
 private:
     map<string, Symbol> __symbols;
 

@@ -27,6 +27,11 @@ AssemblerFlow AssemblerFactory::create_assembler_flow(string file_source, string
     flow.add_step(new ParserStep(&AssemblerParser));
     flow.add_step(line_assembler);
 
+    auto check_consistency = [=] (void) -> void {
+        line_assembler->check_consistency();
+    };
+    flow.add_post_step(new ActionStep(check_consistency));
+
     auto write_to_file = [=] (void) -> void {
         #if DEBUG
         line_assembler->write_debug_file();
@@ -34,7 +39,6 @@ AssemblerFlow AssemblerFactory::create_assembler_flow(string file_source, string
 
         line_assembler->write_object_file();
     };
-
     flow.add_post_step(new ActionStep(write_to_file));
 
     return flow;

@@ -68,4 +68,8 @@ void LineAssemblerStep::write_debug_file() {
     write_to_file(__file_dest + ".debug", __line_handler.build_debug_code());
 }
 
+void LineAssemblerStep::check_consistency() {
+    __line_handler.check_consistency();
+}
+
 } // namespace basilar::assembler::flow

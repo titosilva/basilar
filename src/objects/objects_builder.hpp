@@ -38,6 +38,8 @@ public:
 
     string build_debug_code();
     string build_object_code();
+
+    void check_consistency();
 private:
     Memory __memory;
     SymbolTable __symbol_table;

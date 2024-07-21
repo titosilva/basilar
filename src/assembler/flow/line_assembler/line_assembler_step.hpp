@@ -14,6 +14,7 @@ public:
 
     void write_object_file();
     void write_debug_file();
+    void check_consistency();
 private:
     LineHandler __line_handler;
     string __file_dest;

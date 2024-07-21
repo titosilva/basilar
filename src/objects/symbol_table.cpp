@@ -132,4 +132,12 @@ Symbol SymbolTable::__default_symbol(string name) {
     return symbol;
 }
 
+void SymbolTable::check_consistency() {
+    for (auto [name, symbol] : __symbols) {
+        if (symbol.address == -1) {
+            throw semantic_exception("Symbol \"" + name + "\" not defined");
+        }
+    }
+}
+
 } // namespace basilar::objects
