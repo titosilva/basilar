@@ -43,9 +43,10 @@ void SymbolTable::define_public(string name) {
         __symbols[name] = __default_symbol(name);
     }
 
-    if (__symbols[name].is_external) {
-        throw semantic_exception("Cannot set public an external symbol: " + name);
-    }
+    // This check is not requested by the specification
+    // if (__symbols[name].is_external) {
+    //     throw semantic_exception("Cannot set public an external symbol: " + name);
+    // }
 
     __symbols[name].is_public = true;
 }
