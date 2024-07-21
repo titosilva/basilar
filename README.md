@@ -20,5 +20,6 @@
 - Testar label e instrução em linhas separadas por comentário
 
 - Usar equ como substituição de labels (não consegui fazer no samples 2)
+- Suportar duas instruções em uma linha
 
 - Remover esses TODOs
