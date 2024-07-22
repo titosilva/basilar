@@ -18,7 +18,8 @@ pos:    output saldo
 neg:    output saldo
         jmp finish
 
-    finish:             stop
+    finish:             
+        stop
 zero:                   const 0
 public mod1
 end
