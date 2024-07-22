@@ -43,7 +43,7 @@ optional<ParseContext> Preprocessor::__handle_equ(ParseContext ctx, LineSource*)
     auto value = ctx.get_token_with_type("notwhitespace");
 
     if (!labeldef.has_value() || !value.has_value()) {
-        throw semantic_exception("Expected label definition and value");
+        throw ParsingException(ctx, "Expected label definition and value");
     }
 
     auto label = StringUtils::replace(labeldef.value().value, ":", "");
@@ -61,7 +61,7 @@ optional<ParseContext> Preprocessor::__handle_if(ParseContext ctx, LineSource* s
         auto label = StringUtils::lower(label_name.value().value);
         auto def = __definitions.find(label);
         if (def == __definitions.end()) {
-            throw semantic_exception("Undefined label in conditional");
+            throw ParsingException(ctx, "Undefined label in conditional");
         }
 
         try {
@@ -72,7 +72,7 @@ optional<ParseContext> Preprocessor::__handle_if(ParseContext ctx, LineSource* s
     } else if(number.has_value()) {
         conditional_value = StringUtils::parse_int(number.value().value);
     } else {
-        throw semantic_exception("Expected label or number in conditional");
+        throw ParsingException(ctx, "Expected label or number in conditional");
     }
 
     if (conditional_value == 0) {

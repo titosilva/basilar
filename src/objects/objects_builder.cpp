@@ -12,10 +12,12 @@ void ObjectsBuilder::refer(string name, int displacement) {
 }
 
 void ObjectsBuilder::define(string name) {
-    auto defined = __symbol_table.define(name, __memory.get_current_address());
+    auto defined = __symbol_table.define(name, __memory.get_current_address(), __memory.get_current_line());
 
     if (!defined) {
-        throw semantic_exception("Symbol \"" + name + "\" already defined", __memory.get_current_line());
+        auto line = __symbol_table.get_table()[name].definition_line;
+        auto msg = "Symbol \"" + name + "\" previously defined at line " + to_string(line);
+        throw semantic_exception(msg, __memory.get_current_line());
     }
 
     auto references = __symbol_table.get_pending_references(name);
@@ -25,10 +27,12 @@ void ObjectsBuilder::define(string name) {
 }
 
 void ObjectsBuilder::define_external(string name) {
-    auto defined = __symbol_table.define_external(name);
+    auto defined = __symbol_table.define_external(name, __memory.get_current_line());
 
     if (!defined) {
-        throw semantic_exception("Symbol \"" + name + "\" already defined", __memory.get_current_line());
+        auto line = __symbol_table.get_table()[name].definition_line;
+        auto msg = "Symbol \"" + name + "\" previously defined at line " + to_string(line);
+        throw semantic_exception(msg, __memory.get_current_line());
     }
 
     auto references = __symbol_table.get_pending_references(name);
@@ -46,7 +50,7 @@ void ObjectsBuilder::add_reference(string name, int address) {
 }
 
 void ObjectsBuilder::add_definition(string name, int address) {
-    __symbol_table.define(name, address);
+    __symbol_table.define(name, address, __memory.get_current_line());
 }
 
 void ObjectsBuilder::absolute(int value) {
@@ -223,7 +227,7 @@ string ObjectsBuilder::build_object_code() {
 }
 
 void ObjectsBuilder::check_consistency() {
-    __symbol_table.check_consistency();
+    __symbol_table.check_consistency(__memory);
 }
 
 void debug_log_symbol_table(SymbolTable& symbol_table) {

@@ -133,7 +133,7 @@ ObjectsBuilder ObjectsReader::read() {
     LOG_DEBUG("Reading memory entries...");
     skip_blank_lines(__source, &__current_index);
     while (__source[__current_index] != '\n' && __source[__current_index] != '\r') {
-        if (__source[__current_index] == '\0' || __current_index >= __source.size()) {
+        if (__source[__current_index] == '\0' || __current_index >= (int)__source.size()) {
             break;
         }
 

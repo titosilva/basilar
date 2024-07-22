@@ -1,6 +1,6 @@
 MOD1:   begin
-   gasto                :  extern
-saldo           :  extern
+gasto:  extern
+saldo:  extern
         load saldo
         sub gasto
         sub gasto +     1
@@ -18,7 +18,9 @@ pos:    output saldo
 neg:    output saldo
         jmp finish
 
-    finish:             stop
+; ERRO =======================
+    1finish:             stop
+; ============================
 zero:                   const 0
 public mod1
 end

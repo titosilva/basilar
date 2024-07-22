@@ -10,7 +10,7 @@ ParseResult TokenParser::parse(ParseContext ctx) const {
 }
 
 ParseResult TokenParser::parse(string input) const {
-    return parse(ParseContext{input});
+    return parse(ParseContext{input, 0});
 }
 
 TokenParser operator|(TokenParser lhs, TokenParser rhs) {

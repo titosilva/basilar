@@ -6,10 +6,11 @@ using namespace basilar::exceptions;
 
 namespace basilar::objects {
 
-bool SymbolTable::define(string name, int address) {
+bool SymbolTable::define(string name, int address, int line) {
     if (__symbols.find(name) == __symbols.end()) {
         __symbols[name] = __default_symbol(name);
         __symbols[name].address = address;
+        __symbols[name].definition_line = line;
         return true;
     }
 
@@ -18,14 +19,16 @@ bool SymbolTable::define(string name, int address) {
     }
 
     __symbols[name].address = address;
+    __symbols[name].definition_line = line;
     return true;
 }
 
-bool SymbolTable::define_external(string name) {
+bool SymbolTable::define_external(string name, int line) {
     if (__symbols.find(name) == __symbols.end()) {
         __symbols[name] = __default_symbol(name);
         __symbols[name].address = 0;
         __symbols[name].is_external = true;
+        __symbols[name].definition_line = line;
         return true;
     }
 
@@ -35,6 +38,7 @@ bool SymbolTable::define_external(string name) {
 
     __symbols[name].address = 0;
     __symbols[name].is_external = true;
+    __symbols[name].definition_line = line;
     return true;
 }
 
@@ -132,10 +136,21 @@ Symbol SymbolTable::__default_symbol(string name) {
     return symbol;
 }
 
-void SymbolTable::check_consistency() {
+void SymbolTable::check_consistency(Memory memory) {
     for (auto [name, symbol] : __symbols) {
         if (symbol.address == -1) {
-            throw semantic_exception("Symbol \"" + name + "\" not defined");
+            auto uses = string("Used in lines: ");
+            for (auto reference : symbol.pending_references) {
+                auto mem = memory.read(reference);
+                auto line = mem.line;
+                uses += to_string(line + 1);
+
+                if (reference != symbol.pending_references.back()) {
+                    uses += ", ";
+                }
+            }
+
+            throw semantic_exception("Symbol \"" + name + "\" was used but not defined. " + uses);
         }
     }
 }

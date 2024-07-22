@@ -31,8 +31,9 @@ namespace basilar::tokens {
 
     Def Expression As LabelWithDisplacement | Label;
 
-    DefType(LabelDef, Label >> ":") Then Note("has_label", "true")
+    DefType(LabelDef, Label >> OptSpace >> ":") 
+    Then Note("has_label", "true")
     Then Forbid(RegexParser(R"(.*:)"), "Double label definition")
-    Else Forbid(RegexParser(R"(.*:)"), "Malformed label definition") Then Fail
+    Else ForbidLex(RegexParser(R"(.*:)"), "Malformed label") Then Fail
     EndDef
 } // namespace basilar::tokens

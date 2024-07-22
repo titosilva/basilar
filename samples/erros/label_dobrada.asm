@@ -1,6 +1,6 @@
 MOD1:   begin
-   gasto                :  extern
-saldo           :  extern
+gasto: gasto:  extern
+saldo:  extern
         load saldo
         sub gasto
         sub gasto +     1

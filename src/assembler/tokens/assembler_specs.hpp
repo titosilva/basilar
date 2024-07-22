@@ -9,14 +9,14 @@ namespace basilar::tokens {
         DefParser(name##Call, \
             #name >> Args(args, "Invalid arguments for "#name" instruction") \
         ) Then Note("instruction_call", #name) \
-        Else Forbid(OpsSpace >> #name >> OptSpace, "Invalid number of arguments for "#name" instruction") Then Fail \
+        Else Forbid(OptSpace >> #name >> SpaceOrClose, "Invalid number of arguments for "#name" instruction") Then Fail \
         EndDef
 
     #define DefineInstructionWithoutArgs(name) \
         DefParser(name##Call, \
             #name >> EndLine \
         ) Then Note("instruction_call", #name) \
-        Else Forbid(OpsSpace >> #name >> OptSpace, "Invalid number of arguments for "#name" instruction") Then Fail \
+        Else Forbid(OptSpace >> #name >> SpaceOrClose, "Invalid number of arguments for "#name" instruction") Then Fail \
         EndDef
 
     DefineInstruction(add, Expression)

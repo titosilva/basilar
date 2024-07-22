@@ -1,6 +1,7 @@
 #pragma once
 
 #include "symbol.hpp"
+#include "memory.hpp"
 
 #include <map>
 #include <string>
@@ -11,8 +12,8 @@ namespace basilar::objects {
 
 class SymbolTable {
 public:
-    bool define(string name, int address);
-    bool define_external(string name);
+    bool define(string name, int address, int line);
+    bool define_external(string name, int line);
     void define_public(string name);
     int refer(string name, int address);
 
@@ -23,7 +24,7 @@ public:
     list<int> get_pending_references(string name);
     map<string, Symbol> get_table();
 
-    void check_consistency();
+    void check_consistency(Memory memory);
 private:
     map<string, Symbol> __symbols;
 

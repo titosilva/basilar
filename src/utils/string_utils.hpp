@@ -3,7 +3,6 @@
 #include <string>
 #include <utility>
 #include <regex>
-
 using namespace std;
 
 class StringUtils {
@@ -97,7 +96,7 @@ public:
     static int parse_int(string str) {
         int out;
         if (!try_parse_int(str, &out)) {
-            throw lexycal_exception("Cannot parse int from " + str);
+            throw runtime_error("Cannot parse int from " + str);
         }
 
         return out;

@@ -71,8 +71,6 @@ void LineHandler::handle_directive(string label, string directive, vector<string
         if (label != "") {
             __objects_builder.append_debug_info("def:" + label);
         }
-
-        return;
     }
 
     if (directive == "space") {
@@ -86,15 +84,11 @@ void LineHandler::handle_directive(string label, string directive, vector<string
         for (uint i = 1; i < size; i++) {
             __objects_builder.absolute(0);
         }
-
-        return;
     }
 
     if (directive == "public") {
         auto operand = operands[0];
         __objects_builder.set_public(operand);
-
-        return;
     }
 }
 

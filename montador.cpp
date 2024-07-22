@@ -41,10 +41,16 @@ int main(int argc, char** argv) {
     try {
         flow.run();
     } catch (const semantic_exception& e) {
-        LOG_ERROR("Semantic error: " + string(e.what()));
+        cout << string(e.get_message()) << endl;
         return 1;
     } catch (const lexycal_exception& e) {
-        LOG_ERROR("Lexycal error: " + string(e.what()));
+        cout << string(e.get_message()) << endl;
+        return 1;
+    } catch (const ParsingException& e) {
+        cout << string(e.get_message()) << endl;
+        return 1;
+    } catch (const exception& e) {
+        LOG_ERROR("Fatal error: " + string(e.what()));
         return 1;
     }
     

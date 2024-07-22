@@ -1,7 +1,7 @@
 #pragma once
 
 #include "token_parser.hpp"
-#include "../../../exceptions/parsing_exception.hpp"
+#include "../../../exceptions/exceptions.hpp"
 using namespace basilar::exceptions;
 
 #include <functional>
@@ -54,7 +54,7 @@ const ParserMod<string> Require = [](TokenParser parser, string message) -> Toke
         ParseResult result = parser.parse(ctx);
 
         if (!result.has_value()) {
-            throw ParsingException(message);
+            throw ParsingException(ctx, message);
         }
 
         return result;
@@ -66,7 +66,19 @@ const ParserMod<string> Forbid = [](TokenParser parser, string message) -> Token
         ParseResult result = parser.parse(ctx);
 
         if (result.has_value()) {
-            throw ParsingException(message);
+            throw ParsingException(ctx, message);
+        }
+
+        return ctx;
+    });
+};
+
+const ParserMod<string> ForbidLex = [](TokenParser parser, string message) -> TokenParser {
+    return TokenParser([=](ParseContext ctx) -> ParseResult {
+        ParseResult result = parser.parse(ctx);
+
+        if (result.has_value()) {
+            throw lexycal_exception(ctx, message);
         }
 
         return ctx;

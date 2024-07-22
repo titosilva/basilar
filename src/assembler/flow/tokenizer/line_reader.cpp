@@ -82,7 +82,7 @@ void LineReader::set_prefix(string prefix) {
 }
 
 ParseContext LineReader::read_current_line() {
-    return ParseContext(this->__line);
+    return ParseContext(this->__line, this->__current_line_number);
 }
 
 } // namespace basilar::tokenizer
