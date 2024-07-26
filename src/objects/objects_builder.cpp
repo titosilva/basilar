@@ -114,6 +114,10 @@ void ObjectsBuilder::next_line() {
     __memory.next_line();
 }
 
+void ObjectsBuilder::set_line_number(int line_number) {
+    __memory.set_line_number(line_number);
+}
+
 string ObjectsBuilder::build_debug_code() {
     string debug_file = "";
 

@@ -10,8 +10,9 @@ saldo:  extern
         jmpp pos
         jmpn neg
         output saldo
-        
+
         jmp finish
+
 
 gasto: gasto:  extern
 pos:    output saldo

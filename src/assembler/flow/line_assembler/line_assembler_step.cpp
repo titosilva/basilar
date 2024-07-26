@@ -16,6 +16,8 @@ void write_to_file(string file_dest, string content) {
 }
 
 optional<ParseContext> LineAssemblerStep::run(ParseContext ctx, LineSource*) {
+    __line_handler.set_line_number(ctx.get_line_number());
+
     int idx = 0;
     string label;
     if (ctx.has_annotation("has_label")) {
@@ -50,8 +52,6 @@ optional<ParseContext> LineAssemblerStep::run(ParseContext ctx, LineSource*) {
 
         __line_handler.handle_directive(label, directive, operands);
     }
-
-    __line_handler.next_line();
 
     return nullopt;
 }

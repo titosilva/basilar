@@ -8,7 +8,8 @@ saldo:  extern
         sub gasto         + 2
         sub gasto+3
 
-        
+
+teste:; teste:
         store saldoso
         jmpp pos
         jmpn neg

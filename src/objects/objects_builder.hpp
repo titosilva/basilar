@@ -35,6 +35,7 @@ public:
     void append_debug_info(string info);
 
     void next_line();
+    void set_line_number(int line_number);
 
     string build_debug_code();
     string build_object_code();

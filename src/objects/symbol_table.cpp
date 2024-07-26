@@ -143,7 +143,7 @@ void SymbolTable::check_consistency(Memory memory) {
             for (auto reference : symbol.pending_references) {
                 auto mem = memory.read(reference);
                 auto line = mem.line;
-                uses += to_string(line + 1);
+                uses += to_string(line);
 
                 if (reference != symbol.pending_references.back()) {
                     uses += ", ";

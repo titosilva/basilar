@@ -104,6 +104,10 @@ void LineHandler::next_line() {
     __objects_builder.next_line();
 }
 
+void LineHandler::set_line_number(int line_number) {
+    __objects_builder.set_line_number(line_number);
+}
+
 void LineHandler::check_consistency() {
     __objects_builder.check_consistency();
 }

@@ -3,7 +3,9 @@ gasto:  extern
 saldo:  extern
         load saldo
         sub gasto
-        
+
+
+
         asdasd
         sub gasto +     1
         sub gasto         + 2

@@ -25,6 +25,7 @@ public:
     int get_current_address();
     int get_current_line();
     void next_line();
+    void set_line_number(int line_number);
 private:
     vector<MemoryEntry> __memory;
     int __current_line = 0;

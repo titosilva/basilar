@@ -72,4 +72,8 @@ void Memory::next_line() {
     __current_line++;
 }
 
+void Memory::set_line_number(int line_number) {
+    __current_line = line_number;
+}
+
 } // namespace basilar::objects

@@ -17,6 +17,7 @@ class LineHandler {
 
     void next_line();
     void check_consistency();
+    void set_line_number(int line_number);
 private:
     ObjectsBuilder __objects_builder;
 };
