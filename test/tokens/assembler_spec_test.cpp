@@ -460,6 +460,11 @@ DefineGlobalTestSuiteFor(AssemblerSpecs)
         ASSERT_TRUE(result.value().has_annotation("instruction_call"));
         ASSERT_EQ(result.value().get_annotations().at("instruction_call"), "stop");
     }
+
+    DefineGlobalTest(AssemblerLine__ShouldThrow__WhenLineIsNotInstructionNeitherDirective) {
+        auto parser = AssemblerLine;
+        ASSERT_THROW(parser.parse("label: label"), ParsingException);
+    }
 EndGlobalTestSuite
 
 RunGlobalTest(AssemblerSpecs, addCall__ShouldParse__WhenArgsAreCorrect)
@@ -495,4 +500,5 @@ RunGlobalTest(AssemblerSpecs, InstructionLine__ShouldParse__WhenLabelIsDefined)
 RunGlobalTest(AssemblerSpecs, InstructionLine__ShouldParse__WhenLabelIsNotDefined)
 RunGlobalTest(AssemblerSpecs, InstructionLine__ShouldParse__WhenInstructionIsCopy)
 RunGlobalTest(AssemblerSpecs, InstructionLine__ShouldParse__WhenInstructionIsStop)
+RunGlobalTest(AssemblerSpecs, AssemblerLine__ShouldThrow__WhenLineIsNotInstructionNeitherDirective)
 

@@ -1,0 +1,11 @@
+begin
+x: extern
+y:extern
+public z
+add x
+add y
+store z
+output z
+stop
+z: space
+end

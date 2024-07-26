@@ -1,6 +1,5 @@
 MOD1:   begin
 gasto:  extern
-Gasto: const 2
 saldo:  extern
         load saldo
         sub gasto
@@ -20,6 +19,7 @@ neg:    output saldo
         jmp finish
 
     finish:             stop
+Gasto: const 2
 zero:                   const 0
 public mod1
 end

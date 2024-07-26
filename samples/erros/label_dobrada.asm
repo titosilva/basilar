@@ -1,17 +1,19 @@
 MOD1:   begin
-gasto: gasto:  extern
 saldo:  extern
         load saldo
         sub gasto
         sub gasto +     1
         sub gasto         + 2
+
         sub gasto+3
         store saldo
         jmpp pos
         jmpn neg
         output saldo
+        
         jmp finish
 
+gasto: gasto:  extern
 pos:    output saldo
         jmp finish
 

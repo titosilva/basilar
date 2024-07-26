@@ -13,7 +13,7 @@ namespace basilar::tokens {
     Def EndLine As OptSpace >> Require(Close, "Expected end of line");
 
     const ParserMod<string> Args = [](TokenParser parser, string error) -> TokenParser {
-        return Space >> Require(parser, error) >> EndLine
+        return Space >> Require(parser, error) >> OptSpace >> Require(Close, error)
         Else Forbid(OptSpace >> Close, error) Then Fail;
     };
 

@@ -7,7 +7,7 @@ using namespace basilar::assembler::tokens::parser;
 namespace basilar::tokens {
     #define DefineInstruction(name, args) \
         DefParser(name##Call, \
-            #name >> Args(args, "Invalid arguments for "#name" instruction") \
+            #name >> Args(args, "Invalid number of arguments for "#name" instruction") \
         ) Then Note("instruction_call", #name) \
         Else Forbid(OptSpace >> #name >> SpaceOrClose, "Invalid number of arguments for "#name" instruction") Then Fail \
         EndDef
@@ -107,7 +107,7 @@ namespace basilar::tokens {
     EndDef
 
     Def AssemblerParser As InstructionLine | DirectiveLine
-    Else Forbid(EndLine, "Unknown instruction or directive") Then Fail
+    Else Forbid(OptSpace, "Unknown instruction or directive") Then Fail
     EndDef
 
 } // namespace basilar::tokens

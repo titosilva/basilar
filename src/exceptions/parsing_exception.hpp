@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../src/assembler/tokens/parser/parse_context.hpp"
+#include "../utils/logger.hpp"
 using namespace basilar::assembler::tokens::parser;
 
 #include <string>
@@ -30,6 +31,13 @@ public:
                 auto pos = line.size() - ctx.value().get_remaining_input().size();
                 msg += "\n\t" + line + "\n\t" + string(pos, ' ') + "^";
             }
+
+            for (auto token : ctx.value().get_tokens()) {
+                LOG_DEBUG("Token: " + token.value);
+            }
+
+            LOG_DEBUG("Remaining input: " + ctx.value().get_remaining_input());
+            LOG_DEBUG("Original input: " + ctx.value().get_original_input());
 
             return msg.c_str();
         }

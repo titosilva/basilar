@@ -1,8 +1,9 @@
 mod_out: begin
     public z
     
-    add x
-    add y
+    load zErO
+    add X
+    ADD y
     store z
     output z
     stop
@@ -11,4 +12,8 @@ mod_out: begin
 x: extern
 y: extern
 z: space
+ZeRo:
+
+
+    const 0 ; Comentário
 end
