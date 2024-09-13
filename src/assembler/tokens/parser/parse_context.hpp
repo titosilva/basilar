@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <map>
+#include <optional>
 using namespace std;
 
 namespace basilar::assembler::tokens::parser {

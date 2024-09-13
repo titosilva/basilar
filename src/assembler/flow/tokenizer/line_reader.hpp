@@ -1,7 +1,5 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
 #include <functional>
 #include <queue>
 #include <string>
